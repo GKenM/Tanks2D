@@ -22,7 +22,7 @@ public class gameState extends State{
 		AffineTransform oldTransform = g2d.getTransform();
 		g2d.setTransform(AffineTransform.getRotateInstance(Math.toRadians(tank.getA()), tank.getX()+tank.getWidth()/2, tank.getY()+tank.getHeight()/2));
 	    g2d.fill(temp);
-	    g2d.setColor(Color.red);
+	    g2d.setColor(Color.orange);
 	    g2d.fillRect(tank.getX()+tank.getWidth(), tank.getY()+5, 10, 40);
 	    g2d.setTransform(oldTransform);
 	}
