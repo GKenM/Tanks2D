@@ -10,7 +10,7 @@ public class game extends JFrame {
 	public game() {
 		add(new Board());
 		
-		setTitle("yolo boys");
+		setTitle("Dank Tank");
 		setSize(WIDTH,HEIGHT);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);

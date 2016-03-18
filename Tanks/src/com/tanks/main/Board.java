@@ -12,6 +12,11 @@ import java.awt.event.KeyListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import com.tanks.inputs.KeyboardInput;
+import com.tanks.objects.Tank;
+import com.tanks.states.State;
+import com.tanks.states.gameState;
+
 public class Board extends JPanel implements ActionListener{
 
 	private static final long serialVersionUID = 7681044157732768854L;
@@ -19,6 +24,7 @@ public class Board extends JPanel implements ActionListener{
 	private Tank tank;
 	private KeyboardInput keyIN;
 	private State currentState;
+	
 	private final int DELAY = 1000/30;
 
 	public Board() {
@@ -46,7 +52,7 @@ public class Board extends JPanel implements ActionListener{
 		if (currentState != null) {
 			currentState.doDrawing(g);
 		}
-		
+
 		Toolkit.getDefaultToolkit().sync();
 		
 	}
