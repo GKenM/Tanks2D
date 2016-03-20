@@ -6,9 +6,12 @@ public class game extends JFrame {
 	
 	private static final long serialVersionUID = 253566021152116365L;
 	public static final int WIDTH = 1024, HEIGHT = 768;
+	public static Board board;
 	
 	public game() {
-		add(new Board());
+		board = new Board();
+		add(board);
+		board.start();
 		
 		setTitle("Dank Tank");
 		setSize(WIDTH,HEIGHT);
