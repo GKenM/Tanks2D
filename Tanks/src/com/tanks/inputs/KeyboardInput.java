@@ -38,19 +38,19 @@ public class KeyboardInput {
 			TitleState.isTraining = true;
 			TitleState.isMenu = false;
 			TitleState.isOption = false;
-			game.board.start();
+			game.board.stateChange();
 		}
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			TitleState.isTraining = false;
 			TitleState.isMenu = true;
 			TitleState.isOption = false;
-			game.board.start();
+			game.board.stateChange();
 		} 
 		if (e.getKeyCode() == KeyEvent.VK_O) {
 			TitleState.isTraining = false;
 			TitleState.isMenu = false;
 			TitleState.isOption = true;
-			game.board.start();
+			game.board.stateChange();
 		} 
 		/* if (TitleState.isOption == true){
 			if(e.getKeyCode() == KeyEvent.VK_1){

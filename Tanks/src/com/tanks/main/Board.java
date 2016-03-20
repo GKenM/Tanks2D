@@ -26,6 +26,9 @@ public class Board extends JPanel implements ActionListener{
 	private Tank tank;
 	private KeyboardInput keyIN;
 	private State currentState;
+	private TitleState title;
+	private GameState game;
+	private OptionState option;
 	
 	private final int DELAY = 1000/30;
 
@@ -36,7 +39,7 @@ public class Board extends JPanel implements ActionListener{
 		setBackground(Color.blue);
 		setDoubleBuffered(true);
 		setFocusable(true);
-		//start();
+		start();
 	}
 	
 	
@@ -46,18 +49,26 @@ public class Board extends JPanel implements ActionListener{
 		timer = new Timer(DELAY,this);
 		timer.start();
 		
+		title = new TitleState();
+		game = new GameState(tank);
+		option = new OptionState();
+		
+		currentState = title;
+	
+	}
+	
+	public void stateChange() {
 		if (TitleState.isMenu == true){
-			currentState = new TitleState();
+			currentState = title;
 		}
 
 		if (TitleState.isTraining == true){
-			currentState = new GameState(tank); 	
+			currentState = game; 	
 		}
 		
 		if (TitleState.isOption == true){
-			currentState = new OptionState(); 	
-		}
-	
+			currentState = option; 	
+		}		
 	}
 	
 	public void paintComponent(Graphics g) {
