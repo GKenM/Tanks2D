@@ -15,7 +15,9 @@ import javax.swing.Timer;
 import com.tanks.inputs.KeyboardInput;
 import com.tanks.objects.Tank;
 import com.tanks.states.State;
-import com.tanks.states.gameState;
+import com.tanks.states.TitleState;
+import com.tanks.states.GameState;
+import com.tanks.states.OptionState;
 
 public class Board extends JPanel implements ActionListener{
 
@@ -34,8 +36,9 @@ public class Board extends JPanel implements ActionListener{
 		setBackground(Color.blue);
 		setDoubleBuffered(true);
 		setFocusable(true);
-		start();
+		//start();
 	}
+	
 	
 	public void start() {
 		tank = new Tank(400,300,8, 50, 50);
@@ -43,7 +46,18 @@ public class Board extends JPanel implements ActionListener{
 		timer = new Timer(DELAY,this);
 		timer.start();
 		
-		currentState = new gameState(tank);
+		if (TitleState.isMenu == true){
+			currentState = new TitleState();
+		}
+
+		if (TitleState.isTraining == true){
+			currentState = new GameState(tank); 	
+		}
+		
+		if (TitleState.isOption == true){
+			currentState = new OptionState(); 	
+		}
+	
 	}
 	
 	public void paintComponent(Graphics g) {
