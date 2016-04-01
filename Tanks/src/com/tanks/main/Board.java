@@ -24,6 +24,7 @@ public class Board extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 7681044157732768854L;
 	private Timer timer;
 	private Tank tank;
+	private Tank enemy;
 	private KeyboardInput keyIN;
 	private State currentState;
 	private TitleState title;
@@ -31,7 +32,12 @@ public class Board extends JPanel implements ActionListener{
 	private OptionState option;
 	
 	private final int DELAY = 1000/30;
-
+	
+	private final int tankSize = 48;
+	private final int tankSpeed = 3;
+	
+	private long lastTime = 0;
+	
 	public Board() {
 		KeyListener temp = new Control();
 		addKeyListener(temp);
@@ -44,13 +50,15 @@ public class Board extends JPanel implements ActionListener{
 	
 	
 	public void start() {
-		tank = new Tank(400,300,8, 50, 50);
-		keyIN = new KeyboardInput(tank);
+		tank = new Tank(24,24,tankSpeed,tankSize,tankSize);
+		enemy = new Tank(24,24+48,tankSpeed,tankSize,tankSize);
+		//enemy.setA(180); //
+		keyIN = new KeyboardInput(tank, enemy);
 		timer = new Timer(DELAY,this);
 		timer.start();
 		
 		title = new TitleState();
-		game = new GameState(tank);
+		game = new GameState(tank, enemy);
 		option = new OptionState();
 		
 		currentState = title;
@@ -77,8 +85,15 @@ public class Board extends JPanel implements ActionListener{
 		if (currentState != null) {
 			currentState.doDrawing(g);
 		}
-
+		
 		Toolkit.getDefaultToolkit().sync();
+
+		// Display the FPS on the console
+        long now = System.nanoTime();
+		long timePassed = now - lastTime;
+        lastTime = now;
+        double fps = Math.round(((double) 1000000000 / timePassed));
+        System.out.println(fps);
 		
 	}
 	

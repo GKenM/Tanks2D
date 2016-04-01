@@ -2,28 +2,28 @@ package com.tanks.inputs;
 
 import java.awt.event.KeyEvent;
 
-import com.tanks.main.Board;
 import com.tanks.main.game;
 import com.tanks.objects.Tank;
-import com.tanks.states.OptionState;
 import com.tanks.states.TitleState;
 
 public class KeyboardInput {
 	
 	private Tank tank;
+	private Tank enemy;
 	public boolean fire = false;
 	
-	public KeyboardInput(Tank tank) {
+	public KeyboardInput(Tank tank, Tank enemy) {
 		this.tank = tank;
+		this.enemy = enemy;
 	}
 	
 	public void keyPress(KeyEvent e) {
 		
 		if (e.getKeyCode() == KeyEvent.VK_W) {
-			tank.setPath(tank.getSpeed());
+			tank.setVelocityForward(tank.getSpeed());
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S) {
-			tank.setPath(-tank.getSpeed());
+			tank.setVelocityBackward(tank.getSpeed());
 		}
 		if (e.getKeyCode() == KeyEvent.VK_A) {
 			tank.setA(tank.getA() - 22.5);
@@ -52,62 +52,49 @@ public class KeyboardInput {
 			TitleState.isOption = true;
 			game.board.stateChange();
 		} 
-		/* if (TitleState.isOption == true){
-			if(e.getKeyCode() == KeyEvent.VK_1){
-				OptionState.control1 = true;
-				OptionState.control2 = false;
-				if (e.getKeyCode() == KeyEvent.VK_W) {
-					tank.setPath(tank.getSpeed());
-				}
-				if (e.getKeyCode() == KeyEvent.VK_S) {
-					tank.setPath(-tank.getSpeed());
-				}
-				if (e.getKeyCode() == KeyEvent.VK_A) {
-					tank.setA(tank.getA() - 22.5);
-				}
-				if (e.getKeyCode() == KeyEvent.VK_D) {
-					tank.setA(tank.getA() + 22.5);
-				}
-				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-					tank.fire();
-				}
-			}
-			if(e.getKeyCode() == KeyEvent.VK_2){
-				OptionState.control1 = false;
-				OptionState.control2 = true;
-				if (e.getKeyCode() == KeyEvent.VK_UP) {
-					tank.setPath(tank.getSpeed());
-				}
-				if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-					tank.setPath(-tank.getSpeed());
-				}
-				if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-					tank.setA(tank.getA() - 22.5);
-				}
-				if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					tank.setA(tank.getA() + 22.5);
-				}
-				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-					tank.fire();
-					
-				}
-			}
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
+			enemy.setVelocityForward(enemy.getSpeed());
 		}
-		*/
+		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			enemy.setVelocityBackward(enemy.getSpeed());
+		}
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			enemy.setA(enemy.getA() - 22.5);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			enemy.setA(enemy.getA() + 22.5);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			enemy.fire();
+		}
 	}		
 	public void keyRelease(KeyEvent e) {
 		
 		if (e.getKeyCode() == KeyEvent.VK_W) {
-			tank.setPath(0);
+			tank.setVelocityForward(0);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_S) {
-			tank.setPath(0);
+			tank.setVelocityBackward(0);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_A) {
 			tank.setA(tank.getA() - 0);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_D) {
 			tank.setA(tank.getA() + 0);
+		}
+		
+		
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
+			enemy.setVelocityForward(0);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			enemy.setVelocityBackward(0);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			enemy.setA(enemy.getA() - 0);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			enemy.setA(enemy.getA() + 0);
 		}
 	}
 }

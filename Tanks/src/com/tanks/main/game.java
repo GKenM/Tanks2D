@@ -11,7 +11,6 @@ public class game extends JFrame {
 	public game() {
 		board = new Board();
 		add(board);
-		board.start();
 		
 		setTitle("Dank Tank");
 		setSize(WIDTH,HEIGHT);

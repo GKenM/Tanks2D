@@ -1,9 +1,11 @@
 package com.tanks.objects;
 
+import java.awt.Rectangle;
+
 public class GameObject {
 
 	protected int x,y;
-	protected int path;
+	protected int velocityForward, velocityBackward;
 	protected double a;
 	protected int speed;
 	protected int width, height;
@@ -14,7 +16,8 @@ public class GameObject {
 		this.speed = speed;
 		this.width = width;
 		this.height = height;
-		path = 0;
+		velocityForward = 0;
+		velocityBackward = 0;
 		a = 0.0;
 	}
 	
@@ -34,12 +37,20 @@ public class GameObject {
 		this.y = y;
 	}
 
-	public int getPath() {
-		return path;
+	public int getVelocityForward() {
+		return velocityForward;
 	}
 
-	public void setPath(int path) {
-		this.path = path;
+	public void setVelocityForward(int velocityForward) {
+		this.velocityForward = velocityForward;
+	}
+	
+	public int getVelocityBackward() {
+		return velocityBackward;
+	}
+
+	public void setVelocityBackward(int velocityBackward) {
+		this.velocityBackward = velocityBackward;
 	}
 
 	public double getA() {
@@ -72,5 +83,9 @@ public class GameObject {
 
 	public void setA(double a) {
 		this.a = a;
-	}	
+	}
+	
+	public Rectangle getBounds() {
+		return new Rectangle(x-width/2, y-height/2, width,height);
+	}
 }
