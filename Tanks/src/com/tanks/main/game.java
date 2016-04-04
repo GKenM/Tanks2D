@@ -1,5 +1,7 @@
 package com.tanks.main;
 
+import java.awt.Dimension;
+
 import javax.swing.JFrame;
 
 public class game extends JFrame {
@@ -10,14 +12,18 @@ public class game extends JFrame {
 	
 	public game() {
 		board = new Board();
-		add(board);
-		
+
 		setTitle("Dank Tank");
-		setSize(WIDTH,HEIGHT);
+
+		setPreferredSize(new Dimension(WIDTH,HEIGHT));
+		setMaximumSize(new Dimension(WIDTH,HEIGHT));
+		setMinimumSize(new Dimension(WIDTH,HEIGHT));
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setVisible(true);
 	    setLocationRelativeTo(null);
+	    add(board);
 	}
 
 	public static void main(String[] args) {

@@ -11,13 +11,13 @@ public class TitleState extends State{
 	public static boolean isTraining = false;
 	public static boolean isOption = false;
 	public static boolean isMenu = true;
-	
+	public static boolean isGameMenu = false;
 	
 	@Override
 	public void doDrawing(Graphics g) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			g2d.setColor(Color.black);	
+			g2d.setColor(Color.blue);	
 			g2d.fillRect(252,90,520,120);
 			g2d.setColor(Color.orange);	
 			g2d.fillRect(262,100,500,100);
@@ -59,3 +59,4 @@ public class TitleState extends State{
 
 
 }
+		

@@ -3,63 +3,60 @@ package com.tanks.main;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 import com.tanks.inputs.KeyboardInput;
-import com.tanks.objects.Tank;
 import com.tanks.states.State;
 import com.tanks.states.TitleState;
+import com.tanks.states.GameMenuState;
 import com.tanks.states.GameState;
 import com.tanks.states.OptionState;
 
-public class Board extends JPanel implements ActionListener{
+public class Board extends JPanel implements Runnable{
 
 	private static final long serialVersionUID = 7681044157732768854L;
-	private Timer timer;
-	private Tank tank;
-	private Tank enemy;
 	private KeyboardInput keyIN;
 	private State currentState;
 	private TitleState title;
 	private GameState game;
 	private OptionState option;
+	private GameMenuState menu;
 	
-	private final int DELAY = 1000/30;
+	private Thread thread;
+	private boolean running = false;
 	
-	private final int tankSize = 48;
-	private final int tankSpeed = 3;
-	
-	private long lastTime = 0;
+	int	fps = 30;
+	double averageFPS = 0;
 	
 	public Board() {
+		super();
 		KeyListener temp = new Control();
 		addKeyListener(temp);
 		setFocusable(true);
-		setBackground(Color.blue);
+		setBackground(Color.black);
 		setDoubleBuffered(true);
 		setFocusable(true);
 		start();
 	}
 	
+	public void addNotify() {
+		super.addNotify();
+		if (thread == null) {
+			thread = new Thread(this);
+			thread.start();
+		}
+	}
 	
 	public void start() {
-		tank = new Tank(24,24,tankSpeed,tankSize,tankSize);
-		enemy = new Tank(24,24+48,tankSpeed,tankSize,tankSize);
-		//enemy.setA(180); //
-		keyIN = new KeyboardInput(tank, enemy);
-		timer = new Timer(DELAY,this);
-		timer.start();
-		
 		title = new TitleState();
-		game = new GameState(tank, enemy);
+		game = new GameState();
 		option = new OptionState();
+		menu = new GameMenuState();
+		keyIN = new KeyboardInput();
 		
 		currentState = title;
 	
@@ -77,6 +74,58 @@ public class Board extends JPanel implements ActionListener{
 		if (TitleState.isOption == true){
 			currentState = option; 	
 		}		
+		if (TitleState.isGameMenu == true){
+			currentState = menu; 	
+		}		
+	}
+	
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		running = true;
+		
+		// game loop		
+		long startTime;
+		long URDTimeMillis;
+		long waitTime;
+		long totalTime = 0;
+		
+		int frameCount = 0;
+		int maxFrameCount = 30;
+		
+		long targetTime = 1000/fps;
+		
+		while (running) {
+				// add pause
+			startTime = System.nanoTime();
+			
+			tick();
+			
+			URDTimeMillis = (System.nanoTime() - startTime)/1000000;
+			waitTime = targetTime - URDTimeMillis;
+			
+			try {
+				Thread.sleep(waitTime);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			// Display the average FPS every second
+			totalTime += System.nanoTime() - startTime;
+			frameCount++;
+			if (frameCount == maxFrameCount) {
+				averageFPS = Math.round(1000.0 / ((totalTime/frameCount) / 1000000));
+				frameCount = 0;
+				totalTime = 0;
+			}
+		}
+	}
+	
+	public void tick() {
+		if (currentState != null) {
+			currentState.tick();
+		}
+		repaint();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -88,20 +137,8 @@ public class Board extends JPanel implements ActionListener{
 		
 		Toolkit.getDefaultToolkit().sync();
 
-		// Display the FPS on the console
-        long now = System.nanoTime();
-		long timePassed = now - lastTime;
-        lastTime = now;
-        double fps = Math.round(((double) 1000000000 / timePassed));
         System.out.println(fps);
 		
-	}
-	
-	public void actionPerformed(ActionEvent e) {
-		if (currentState != null) {
-			currentState.tick();
-		}
-		repaint();
 	}
 		
 	private class Control extends KeyAdapter {

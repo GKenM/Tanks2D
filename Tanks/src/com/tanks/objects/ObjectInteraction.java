@@ -3,6 +3,7 @@ package com.tanks.objects;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.util.ArrayList;
 
 import com.tanks.reminders.RespawnDelay;
@@ -69,105 +70,104 @@ public class ObjectInteraction {
 	public void bulletVsWalls(ArrayList<Bullet> ts) {
 	    for (int i = 0; i < ts.size(); i++) {
 	    	bullet = ts.get(i);
-	    	
-	    	Rectangle bulletBounds = bullet.getBounds();
+	    	   	
+    		int castX = (int) (bullet.getX() + bullet.getVelX());
+    		int castY = (int) (bullet.getY() + bullet.getVelY());
+
+    		Rectangle castBullet = new Rectangle(castX-bullet.getWidth()/2, castY-bullet.getHeight()/2, bullet.getWidth(), bullet.getHeight());
+    		
 	    	
 	    	// Window boundary bounce
-	    	if (bulletBounds.getX() < 0||bulletBounds.getMaxX() > 1024) {
+	    	if (castBullet.getX() < 0||castBullet.getMaxX() > 1024) {
 	    		bullet.setBounce(true);
-	    		bullet.setSpeedX(-bullet.getSpeedX());
+	    		bullet.setVelX(-bullet.getVelX());
 	    	}
-	    	if (bulletBounds.getY() < 0||bulletBounds.getMaxY() > 768) {
+	    	if (castBullet.getY() < 0||castBullet.getMaxY() > 768) {
 	    		bullet.setBounce(true);
-	    		bullet.setSpeedY(-bullet.getSpeedY());
+	    		bullet.setVelY(-bullet.getVelY());
 	    	}
 	    	
-    	
-	    	// TOO GLITCHY - PLZ GABEN FIX
-	    	/*ArrayList<GameObject> ws = walls.getWalls();
+	    	ArrayList<GameObject> ws = walls.getWalls();
+	    	ArrayList<GameObject> temp = new ArrayList<GameObject>();
 	    	
 	    	for (int j = 0; j < ws.size(); j++) {
 	    		wall = ws.get(j);
 	    		
 	    		Rectangle wallBounds = wall.getBounds();
-
-	    		if (wallBounds.intersects(bulletBounds)) {
+	    		
+	    		if (wallBounds.intersects(castBullet)) {
+	    			temp.add(wall);
 	    			bullet.setBounce(true);
-	    			Rectangle insect = wallBounds.intersection(bulletBounds);
-	    			
-	    			boolean vert = false;
-	    			boolean horz = false;
-	    			boolean isLeft = false;
-	    			boolean isTop = false;
-	    			
-	    			if(insect.getX() == wallBounds.getX()) {
-	    				horz = true;
-	    				isLeft = true;
-	    			} else if (insect.getX() + insect.getWidth() == wallBounds.getX() + wallBounds.getWidth()) {
-	    				horz = true;
-	    			}
-	    			
-	    			if (insect.getY() == wallBounds.getY()) {
-	    				vert = true;
-	    				isTop = true;
-	    			} else if (insect.getY() + insect.getHeight() == wallBounds.getY() + wallBounds.getHeight()) {
-	    				vert = true;
-	    			}
-	    			
-	    			if (horz && vert) {
-	    				if (insect.getWidth() == insect.getHeight()) {
-	    					horz = false;
-	    					vert = false;
-	    					//System.out.println("FK");
-	    				} else if (insect.getWidth() > insect.getHeight()) {
-	    					horz = false;
-	    				} else {
-	    					vert = false;
-	    				}
-	    			}
-	    			
-	    			if (horz) {
-	    				bullet.setSpeedX(-bullet.getSpeedX());
-	    				
-	    				if (isLeft) {
-	    					bulletBounds.x = wallBounds.x - bulletBounds.width;
-	    				} else {
-	    					bulletBounds.x = wallBounds.x + wallBounds.width;
-	    				}
-	    			} else if (vert) {
-	    				bullet.setSpeedY(-bullet.getSpeedY());
-	    				
-	    				if(isTop) {
-	    					bulletBounds.y = wallBounds.y - bulletBounds.height;
-	    				} else {
-	    					bulletBounds.y = wallBounds.y  + wallBounds.height;
-	    				}
-	    			} else {
-    					bullet.setSpeedX(-bullet.getSpeedX());
-    					bullet.setSpeedY(-bullet.getSpeedY());
-    					
-    					// Rewrite more efficiently
-    					if (wallBounds.getX() == insect.getX() && wallBounds.getY() == insect.getY()) {
-    						// top left corner
-    						bulletBounds.x = wallBounds.x - bulletBounds.width;
-    						bulletBounds.y = wallBounds.y - bulletBounds.height;
-    					} else if (wallBounds.getMaxX() == insect.getMaxX() && wallBounds.getY() == insect.getY()) {
-    						// top right corner
-    						bulletBounds.x = wallBounds.x + bulletBounds.width;
-    						bulletBounds.y = wallBounds.y - bulletBounds.height;
-    					} else if (wallBounds.getMaxY() == insect.getMaxY() && wallBounds.getX() == insect.getX()) {
-    						// bottom left
-    						bulletBounds.x = wallBounds.x - bulletBounds.width;
-    						bulletBounds.y = wallBounds.y + bulletBounds.height;
-    					} else if (wallBounds.getMaxX() == insect.getMaxX() && wallBounds.getMaxY() == insect.getMaxY()) {
-    						// bottom right
-    						bulletBounds.x = wallBounds.x + bulletBounds.width;
-    						bulletBounds.y = wallBounds.y + bulletBounds.height;
-    					}
-    	    		}
 	    		}
 	    	}
-*/	    }
+	    	
+	    	if (temp.size() != 0) {
+	    	System.out.println(temp.size());
+	    	
+	    	}
+ 
+	    	if (temp.size() == 1) {
+	    		// run the full algorithm
+	    		
+	    		// Almost but not perfect
+	    		// BUGS: when it hit the corner and has no velocity in one direction
+	    		Rectangle wallBounds = temp.get(0).getBounds();
+    			Rectangle insect = wallBounds.intersection(castBullet);
+    			
+    			boolean vert = false;
+    			boolean horz = false;
+    			
+    			if(insect.getX() == wallBounds.getX()) {
+    				horz = true;
+    			} else if (insect.getX() + insect.getWidth() == wallBounds.getX() + wallBounds.getWidth()) {
+    				horz = true;
+    			}
+    			
+    			if (insect.getY() == wallBounds.getY()) {
+    				vert = true;
+    			} else if (insect.getY() + insect.getHeight() == wallBounds.getY() + wallBounds.getHeight()) {
+    				vert = true;
+    			}
+    			
+    			if (horz && vert) {
+    				if (insect.getWidth() == insect.getHeight()) {
+    					horz = false;
+    					vert = false;
+    					//System.out.println("FK");
+    				} else if (insect.getWidth() > insect.getHeight()) {
+    					horz = false;
+    				} else {
+    					vert = false;
+    				}
+    			}
+    			
+    			if (horz) {
+    				bullet.setVelX(-bullet.getVelX());
+    			} else if (vert) {
+    				bullet.setVelY(-bullet.getVelY());
+    			} else {
+					bullet.setVelX(-bullet.getVelX());
+					bullet.setVelY(-bullet.getVelY());
+	    		}
+
+	    	} else if (temp.size() == 2) {
+	    		// run horz or vertical
+	    		GameObject wall1 = temp.get(0);
+	    		GameObject wall2 = temp.get(1);
+	    		
+	    		if (wall1.getX() == wall2.getX()+wall2.getWidth() || wall1.getX()+wall1.getWidth() == wall2.getX()) {
+	    			bullet.setVelY(-bullet.getVelY());
+	    			//System.out.println("Hit vert");
+	    		}
+	    		if (wall1.getY() == wall2.getY()+wall2.getHeight() || wall1.getY()+wall1.getHeight() == wall2.getY()) {
+	    			bullet.setVelX(-bullet.getVelX());
+	    		}
+	    	} else if (temp.size() == 3) {
+	    		// dnt run any
+	    		bullet.setVelX(-bullet.getVelX());
+	    		bullet.setVelY(-bullet.getVelY());
+	    	}
+	    }
 	}
 	
 	public void tankVsBullet(Tank player1, Tank player2, ArrayList<Bullet> m1, ArrayList<Bullet> m2) {
@@ -180,6 +180,8 @@ public class ObjectInteraction {
 		AffineTransform bf = new AffineTransform();
 		bf.rotate(player2.getA() * Math.PI/180, player2.getX(), player2.getY());
 		p2Bounds = bf.createTransformedShape(p2Bounds);	
+		
+		// ROTATE THE BULLET HITBOX - SHOULD I??
 		
 		for (int i = 0; i < m1.size(); i++) {
 			bullet = m1.get(i);
@@ -224,4 +226,50 @@ public class ObjectInteraction {
 			}
 		}
 	}
+	
+	public void tankvsTank(Tank player1, Tank player2) {
+		Shape p1Bounds = player1.getBounds();
+		AffineTransform af = new AffineTransform();
+		af.rotate(player1.getA() * Math.PI/180, player1.getX(), player1.getY());
+		p1Bounds = af.createTransformedShape(p1Bounds);
+		
+		Shape p2Bounds = player2.getBounds();
+		AffineTransform bf = new AffineTransform();
+		bf.rotate(player2.getA() * Math.PI/180, player2.getX(), player2.getY());
+		p2Bounds = bf.createTransformedShape(p2Bounds);	
+	
+		Area p1 = new Area(p1Bounds);
+		Area p2 = new Area(p2Bounds);
+		
+		p1.intersect(p2);
+		
+		if (!p1.isEmpty()) {
+			player1.setVis(false);
+			player2.setVis(false);
+			respawnDelay.add(new RespawnDelay(1000));
+		}
+		
+	}
+	
+	public void bulletvsBullet(ArrayList<Bullet> m1, ArrayList<Bullet> m2) {
+		for (int i = 0; i < m1.size(); i++) {
+			Rectangle bullet1 = m1.get(i).getBounds();
+			
+			for (int j = 0; j < m2.size(); j++) {
+				Rectangle bullet2 = m2.get(j).getBounds();
+				
+				if (bullet1.intersects(bullet2)) {
+					m1.get(i).setVis(false);
+					m2.get(j).setVis(false);
+				}
+				
+			}
+		}
+	}
+	
+	public void tankvsPowerUp() {
+		
+	}
+	
+	
 }

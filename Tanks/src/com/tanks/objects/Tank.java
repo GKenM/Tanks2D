@@ -1,6 +1,5 @@
 package com.tanks.objects;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -11,8 +10,7 @@ public class Tank extends GameObject {
 	private Bullet bullet;
 	private ArrayList<Bullet> bullets;
 	private ArrayList<BulletDelay> bulletDelay;
-	private Walls walls;
-	
+
 	private final int bulletSize = 8;
 	private final int bulletSpeed = 9;
 	
@@ -23,7 +21,6 @@ public class Tank extends GameObject {
 		super(x, y, speed, width, height);
 		bullets = new ArrayList<Bullet>();
 		bulletDelay = new ArrayList<BulletDelay>();
-		walls = new Walls();
 		isVis = true;
 		score = 0;
 	}
@@ -46,30 +43,13 @@ public class Tank extends GameObject {
 		}
 	}
 	
-	public void respawn() {
+	public void respawn(int minX, int maxX, int minY, int maxY, double a) {
 		// Set proper respawn boundaries and make sure they don't collide with walls
-		ArrayList<GameObject> wall = walls.getWalls();
 		Random rand = new Random();
-		
-		boolean running = true;
-		
-		while(running) {
-		int tempX = rand.nextInt(1024-width/2) + width/2;
-		int tempY = rand.nextInt(768-height/2) + height/2;
-		
-		Rectangle tempTank = new Rectangle (tempX,tempY, width, height);
-	    
-	    for (int i = 0; i < wall.size(); i++) {
-	    	if (tempTank.intersects(wall.get(i).getBounds())) {
-	    		running = true;
-	    	} else {
-	    		x = tempX;
-	    		y = tempY;
-	    		isVis = true;
-	    		running = false;
-	    	}
-	    }
-		}
+		x = rand.nextInt(maxX) + minX+1;
+		y = rand.nextInt(maxY) + minY+1;
+		isVis = true;
+		this.a = a;
 	}
 	
 	public ArrayList<BulletDelay> getReminder() {

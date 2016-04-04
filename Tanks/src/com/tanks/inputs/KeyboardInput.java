@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 
 import com.tanks.main.game;
 import com.tanks.objects.Tank;
+import com.tanks.states.GameState;
 import com.tanks.states.TitleState;
 
 public class KeyboardInput {
@@ -12,9 +13,9 @@ public class KeyboardInput {
 	private Tank enemy;
 	public boolean fire = false;
 	
-	public KeyboardInput(Tank tank, Tank enemy) {
-		this.tank = tank;
-		this.enemy = enemy;
+	public KeyboardInput() {
+		this.tank = GameState.getMode().getPlayer1();
+		this.enemy = GameState.getMode().getPlayer2();
 	}
 	
 	public void keyPress(KeyEvent e) {
@@ -34,38 +35,50 @@ public class KeyboardInput {
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			tank.fire();
 		} 
-		if (e.getKeyCode() == KeyEvent.VK_T) {
+		if ((e.getKeyCode() == KeyEvent.VK_T)) {
 			TitleState.isTraining = true;
 			TitleState.isMenu = false;
 			TitleState.isOption = false;
+			TitleState.isGameMenu = false;
 			game.board.stateChange();
 		}
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		if ((e.getKeyCode() == KeyEvent.VK_M) && (TitleState.isTraining == false)) {
 			TitleState.isTraining = false;
 			TitleState.isMenu = true;
 			TitleState.isOption = false;
+			TitleState.isGameMenu = false;
 			game.board.stateChange();
 		} 
-		if (e.getKeyCode() == KeyEvent.VK_O) {
+		if ((e.getKeyCode() == KeyEvent.VK_O) && ((TitleState.isGameMenu == true) || (TitleState.isMenu == true))) {
 			TitleState.isTraining = false;
 			TitleState.isMenu = false;
 			TitleState.isOption = true;
+			TitleState.isGameMenu = false;
 			game.board.stateChange();
 		} 
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			enemy.setVelocityForward(enemy.getSpeed());
+		if((e.getKeyCode() == KeyEvent.VK_ESCAPE) && (TitleState.isTraining == true)) {
+			TitleState.isTraining = false;
+			TitleState.isMenu = false;
+			TitleState.isOption = false;
+			TitleState.isGameMenu = true;
+			game.board.stateChange();
 		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			enemy.setVelocityBackward(enemy.getSpeed());
-		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			enemy.setA(enemy.getA() - 22.5);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			enemy.setA(enemy.getA() + 22.5);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			enemy.fire();
+		if (enemy != null) { // Replace with states so keys can be used with menus
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				enemy.setVelocityForward(enemy.getSpeed());
+			}
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				enemy.setVelocityBackward(enemy.getSpeed());
+			}
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				enemy.setA(enemy.getA() - 22.5);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				enemy.setA(enemy.getA() + 22.5);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				enemy.fire();
+			}
 		}
 	}		
 	public void keyRelease(KeyEvent e) {
@@ -83,18 +96,19 @@ public class KeyboardInput {
 			tank.setA(tank.getA() + 0);
 		}
 		
-		
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			enemy.setVelocityForward(0);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			enemy.setVelocityBackward(0);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			enemy.setA(enemy.getA() - 0);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			enemy.setA(enemy.getA() + 0);
+		if (enemy != null) { 
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				enemy.setVelocityForward(0);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				enemy.setVelocityBackward(0);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				enemy.setA(enemy.getA() - 0);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				enemy.setA(enemy.getA() + 0);
+			}
 		}
 	}
 }

@@ -4,22 +4,22 @@ public class Bullet extends GameObject{
 	
 	private boolean isVis;
 
-	private int speedX;
-	private int speedY;
+	private double velX;
+	private double velY;
 	private boolean bounce;
 	
 	public Bullet(int x, int y, int speed, int width, int height, double a) {
 		super(x, y, speed, width, height);
 		this.a = a;
-		this.speedX = speed;
-		this.speedY = speed;
+		this.velX = Math.round(speed * Math.cos(a * Math.PI/180));
+		this.velY = Math.round(speed * Math.sin(a * Math.PI/180));
 		isVis = true;
 		bounce = false;
 	}
 	
 	public void move() {
-		x += Math.round(speedX * Math.cos(a * Math.PI/180));
-		y += Math.round(speedY * Math.sin(a * Math.PI/180));
+		x += velX;
+		y += velY;
 	}
 	
 	public void setVis(boolean vis) {
@@ -30,20 +30,20 @@ public class Bullet extends GameObject{
 		return isVis;
 	}
 
-	public int getSpeedX() {
-		return speedX;
+	public double getVelX() {
+		return velX;
 	}
 
-	public void setSpeedX(int speedX) {
-		this.speedX = speedX;
+	public void setVelX(double velX) {
+		this.velX = velX;
 	}
 
-	public int getSpeedY() {
-		return speedY;
+	public double getVelY() {
+		return velY;
 	}
 
-	public void setSpeedY(int speedY) {
-		this.speedY = speedY;
+	public void setVelY(double velY) {
+		this.velY = velY;
 	}
 	
 	public void setBounce(boolean b) {
