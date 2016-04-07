@@ -3,6 +3,8 @@ package com.tanks.reminders;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import com.tanks.states.GameState;
+
 public class GameTimer {
 	private int count, tick, mins, secs, startup;
 	
@@ -17,6 +19,9 @@ public class GameTimer {
 			startup--;
 			count--;
 			tick = 0;
+		}
+		if (count == 0) {
+			GameState.reset();
 		}
 		tick++;
 	}

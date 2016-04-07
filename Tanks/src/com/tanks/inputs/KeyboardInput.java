@@ -33,7 +33,7 @@ public class KeyboardInput {
 			tank.setA(tank.getA() + 22.5);
 		}
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			tank.fire();
+			if (tank.isFired() == false) {tank.fire();}
 		} 
 		if ((e.getKeyCode() == KeyEvent.VK_T)) {
 			TitleState.isTraining = true;
@@ -77,7 +77,7 @@ public class KeyboardInput {
 				enemy.setA(enemy.getA() + 22.5);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-				enemy.fire();
+				if (enemy.isFired() == false) {enemy.fire();}
 			}
 		}
 	}		

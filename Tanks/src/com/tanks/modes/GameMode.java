@@ -3,6 +3,7 @@ package com.tanks.modes;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import com.tanks.main.game;
 import com.tanks.objects.Bullet;
 import com.tanks.objects.GameObject;
 import com.tanks.objects.ObjectInteraction;
@@ -11,9 +12,9 @@ import com.tanks.resources.LoadSprites;
 
 public abstract class GameMode {
 	public static final int tankSize = 48;
-	public static final int tankSpeed = 3;
+	public static final double tankSpeed = 3;
 	
-	protected Tank player1;
+	protected static Tank player1;
     protected static ArrayList<Bullet> p1Bullets;
     protected Bullet bullet;
     protected LoadSprites image;
@@ -21,7 +22,7 @@ public abstract class GameMode {
 	protected ObjectInteraction mechanics;
     
 	public GameMode() {
-		player1 = new Tank(0,0,tankSpeed,tankSize,tankSize);
+		player1 = new Tank(0,0,tankSpeed,tankSize,tankSize,game.P1);
 		mechanics = new ObjectInteraction();
 		p1Bullets = player1.getBullets();
 		image = new LoadSprites();
