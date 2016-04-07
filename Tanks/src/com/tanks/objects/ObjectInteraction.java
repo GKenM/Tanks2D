@@ -6,7 +6,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 
+import com.tanks.main.game;
 import com.tanks.reminders.RespawnDelay;
+import com.tanks.states.GameState;
 
 public class ObjectInteraction {
 	private Bullet bullet;
@@ -17,9 +19,9 @@ public class ObjectInteraction {
 	private Rectangle top, bottom, left, right;
 	
 	public ObjectInteraction() {
-		bullet = new Bullet(0,0,0,0,0,0);
+		bullet = new Bullet(0,0,0,0,0,0,game.BULLET);
 		walls = new Walls();
-		wall = new GameObject(0,0,0,0,0);
+		wall = new GameObject(0,0,0,0,0,game.WALL);
 		respawnDelay = new ArrayList<RespawnDelay>();
 		
 		// create boundary walls
@@ -76,20 +78,36 @@ public class ObjectInteraction {
 
     		Rectangle castBullet = new Rectangle(castX-bullet.getWidth()/2, castY-bullet.getHeight()/2, bullet.getWidth(), bullet.getHeight());
     		
-	    	
 	    	// Window boundary bounce
-	    	if (castBullet.getX() < 0||castBullet.getMaxX() > 1024) {
+	    	if (castBullet.getX() < 0) {
+	    		// Bullet is going to hit the left boundary
 	    		bullet.setBounce(true);
 	    		bullet.setVelX(-bullet.getVelX());
+	    		bullet.setX(0+bullet.getWidth()/2);
 	    	}
-	    	if (castBullet.getY() < 0||castBullet.getMaxY() > 768) {
+	    	if (castBullet.getMaxX() > game.WIDTH) {
+	    		// Bullet is going to hit the right boundary 
+	    		bullet.setBounce(true);
+	    		bullet.setVelX(-bullet.getVelX());
+	    		bullet.setX(game.WIDTH-bullet.getWidth()/2);
+	    	}
+	    	if (castBullet.getY() < 0) {
+	    		// Bullet is going to hit the top boundary
 	    		bullet.setBounce(true);
 	    		bullet.setVelY(-bullet.getVelY());
+	    		bullet.setY(0+bullet.getHeight()/2);
+	    	}
+	    	if (castBullet.getMaxY() > game.HEIGHT) {
+	    		// Bullet is going to hit the bottom boundary
+	    		bullet.setBounce(true);
+	    		bullet.setVelY(-bullet.getVelY());
+	    		bullet.setY(game.HEIGHT-bullet.getHeight()/2);
 	    	}
 	    	
 	    	ArrayList<GameObject> ws = walls.getWalls();
 	    	ArrayList<GameObject> temp = new ArrayList<GameObject>();
 	    	
+	    	// Calculate all the walls the bullet is going to hit
 	    	for (int j = 0; j < ws.size(); j++) {
 	    		wall = ws.get(j);
 	    		
@@ -100,108 +118,150 @@ public class ObjectInteraction {
 	    			bullet.setBounce(true);
 	    		}
 	    	}
-	    	
-	    	if (temp.size() != 0) {
-	    	System.out.println(temp.size());
-	    	
-	    	}
- 
+	    	// If the bullet is only going to collide with one wall
 	    	if (temp.size() == 1) {
-	    		// run the full algorithm
-	    		
-	    		// Almost but not perfect
-	    		// BUGS: when it hit the corner and has no velocity in one direction
 	    		Rectangle wallBounds = temp.get(0).getBounds();
     			Rectangle insect = wallBounds.intersection(castBullet);
     			
     			boolean vert = false;
     			boolean horz = false;
+    			boolean topRight = false;
+    			boolean topLeft = false;
+    			boolean bottomRight = false;
+    			boolean bottomLeft = false;
     			
+    			// Check if the bullet is going to collide on the the left or right of the wall
     			if(insect.getX() == wallBounds.getX()) {
     				horz = true;
     			} else if (insect.getX() + insect.getWidth() == wallBounds.getX() + wallBounds.getWidth()) {
     				horz = true;
     			}
     			
+    			// Check if the bullet is going to collide on the top or bottom of the wall
     			if (insect.getY() == wallBounds.getY()) {
     				vert = true;
     			} else if (insect.getY() + insect.getHeight() == wallBounds.getY() + wallBounds.getHeight()) {
     				vert = true;
     			}
     			
+    			// If the bullet is going to collide on the corner of the wall
     			if (horz && vert) {
-    				if (insect.getWidth() == insect.getHeight()) {
-    					horz = false;
-    					vert = false;
-    					//System.out.println("FK");
-    				} else if (insect.getWidth() > insect.getHeight()) {
-    					horz = false;
-    				} else {
-    					vert = false;
-    				}
+    				horz = false;
+    				vert = false;
+    				// Check for which corner the the bullet will hit
+    				// If the bullet axis's aligns with the corner then disregard it as a corner hit
+    				// and figure out if its a vertical or horizontal hit
+					if (insect.getX() == wallBounds.getX() && insect.getY() == wallBounds.getY()) {
+						if (castBullet.getX() == wallBounds.getX()) {
+							vert = true;
+						} else if (castBullet.getY() == wallBounds.getY()) {
+							horz = true;
+						} else {
+							topLeft = true;
+						}
+					} else if (insect.getMaxX() == wallBounds.getMaxX() && insect.getY() == wallBounds.getY()) {
+						if (castBullet.getMaxX() == wallBounds.getMaxX()) {
+							vert = true;
+						} else if (castBullet.getY() == wallBounds.getY()) {
+							horz = true;
+						} else {
+							topRight = true;
+						}
+					} else if (insect.getX() == wallBounds.getX() && insect.getMaxY() == wallBounds.getMaxY()) {
+						if (castBullet.getX() == wallBounds.getX()) {
+							vert = true;
+						} else if (castBullet.getMaxY() == wallBounds.getMaxY()) {
+							horz = true;
+						} else {
+							bottomLeft = true;
+						}
+					} else if (insect.getMaxX() == wallBounds.getMaxX() && insect.getMaxY() == wallBounds.getMaxY()) {
+						if (castBullet.getMaxX() == wallBounds.getMaxX()) {
+							vert = true;
+						} else if (castBullet.getMaxY() == wallBounds.getMaxY()) {
+							horz = true;
+						} else {
+							bottomRight = true;
+						}
+					}
     			}
     			
     			if (horz) {
+    				// If its a horizontal collision, invert the horizontal velocity vector
     				bullet.setVelX(-bullet.getVelX());
     			} else if (vert) {
+    				// If its a vertical collision, invert the vertical velocity vector
     				bullet.setVelY(-bullet.getVelY());
     			} else {
-					bullet.setVelX(-bullet.getVelX());
-					bullet.setVelY(-bullet.getVelY());
+    				// If the collision is in the corner
+					if (topLeft) {
+						// If the collision is in top left, then velocity x and velocity y should both be turned negative
+						if (bullet.getVelX() > 0) {bullet.setVelX(-bullet.getVelX());}
+						if (bullet.getVelY() > 0) {bullet.setVelY(-bullet.getVelY());}
+					} else if (topRight) {
+						// If top right, velocity x should be positive and velocity y should be negative
+						if (bullet.getVelX() < 0) {bullet.setVelX(-bullet.getVelX());}
+						if (bullet.getVelY() > 0) {bullet.setVelY(-bullet.getVelY());}
+					} else if (bottomLeft) {
+						// If bottom left, velocity x should be negative and velocity y should be positive
+						if (bullet.getVelX() > 0) {bullet.setVelX(-bullet.getVelX());}
+						if (bullet.getVelY() < 0) {bullet.setVelY(-bullet.getVelY());}
+					} else if (bottomRight) {
+						// If bottom right, both velocity x and velocity y should be positive
+						if (bullet.getVelX() < 0) {bullet.setVelX(-bullet.getVelX());}
+						if (bullet.getVelY() < 0) {bullet.setVelY(-bullet.getVelY());}
+					}
+					
 	    		}
 
 	    	} else if (temp.size() == 2) {
-	    		// run horz or vertical
+	    		// If the bullet is hitting two walls at the same time
 	    		GameObject wall1 = temp.get(0);
 	    		GameObject wall2 = temp.get(1);
 	    		
+	    		// Figure out if its a vertical hit or horizontal hit, invert vectors accordingly
 	    		if (wall1.getX() == wall2.getX()+wall2.getWidth() || wall1.getX()+wall1.getWidth() == wall2.getX()) {
 	    			bullet.setVelY(-bullet.getVelY());
-	    			//System.out.println("Hit vert");
 	    		}
 	    		if (wall1.getY() == wall2.getY()+wall2.getHeight() || wall1.getY()+wall1.getHeight() == wall2.getY()) {
 	    			bullet.setVelX(-bullet.getVelX());
 	    		}
 	    	} else if (temp.size() == 3) {
-	    		// dnt run any
+	    		// If the bullet is hitting 3 walls at the same time, then it is a corner, so invert both vectors
 	    		bullet.setVelX(-bullet.getVelX());
 	    		bullet.setVelY(-bullet.getVelY());
 	    	}
 	    }
 	}
 	
-	public void tankVsBullet(Tank player1, Tank player2, ArrayList<Bullet> m1, ArrayList<Bullet> m2) {
-		Shape p1Bounds = player1.getBounds();
-		AffineTransform af = new AffineTransform();
-		af.rotate(player1.getA() * Math.PI/180, player1.getX(), player1.getY());
-		p1Bounds = af.createTransformedShape(p1Bounds);
-		
-		Shape p2Bounds = player2.getBounds();
-		AffineTransform bf = new AffineTransform();
-		bf.rotate(player2.getA() * Math.PI/180, player2.getX(), player2.getY());
-		p2Bounds = bf.createTransformedShape(p2Bounds);	
-		
-		// ROTATE THE BULLET HITBOX - SHOULD I??
-		
+	public void tankVsBullet(Tank player1, Tank player2, ArrayList<Bullet> m1, ArrayList<Bullet> m2, Shape p1Bounds, Shape p2Bounds) {
 		for (int i = 0; i < m1.size(); i++) {
 			bullet = m1.get(i);
 			Rectangle bulletBounds = bullet.getBounds();
 			
+			// If player 1 bullet hits player 1
 			if (p1Bounds.intersects(bulletBounds)&&bullet.getBounce()) {
 				bullet.setVis(false);
-				// increment p2 score and respawn
-				player2.setScore(player2.getScore()+1);
-				respawnDelay.add(new RespawnDelay(1000));
-				//set p1 to invisible
-				player1.setVis(false);
+				if (player1.isBubble() == false) {
+					player1.setVis(false);
+					player2.setScore(player2.getScore()+1);
+					respawnDelay.add(new RespawnDelay(1000));
+				} else {
+					player1.setBubble(false);
+					player1.setPU(0);
+				}
 			} 
+			// If player 1 bullet hits player 2
 			if (p2Bounds.intersects(bulletBounds)) {
 				bullet.setVis(false);
-				//increment p1 score and respawn
-				player1.setScore(player1.getScore()+1);
-				respawnDelay.add(new RespawnDelay(1000));
-				//set p2 to invisible
-				player2.setVis(false);
+				if (player2.isBubble() == false) {
+					player2.setVis(false);
+					player1.setScore(player2.getScore()+1);
+					respawnDelay.add(new RespawnDelay(1000));
+				} else {
+					player2.setBubble(false);
+					player2.setPU(0);
+				}
 			}
 		}
 		
@@ -209,35 +269,35 @@ public class ObjectInteraction {
 			bullet = m2.get(i);
 			Rectangle bulletBounds = bullet.getBounds();
 			
+			// If player 2 bullet hits player 1
 			if (p1Bounds.intersects(bulletBounds)) {
 				bullet.setVis(false);
-				// increment p2 score and respawn
-				player2.setScore(player2.getScore()+1);
-				respawnDelay.add(new RespawnDelay(1000));
-				//set p1 to invisible
-				player1.setVis(false);
-			} else if (p2Bounds.intersects(bulletBounds)&&bullet.getBounce()) {
-				bullet.setVis(false);
-				//increment p1 score and respawn
-				player1.setScore(player1.getScore()+1);
-				respawnDelay.add(new RespawnDelay(1000));
-				//set p2 to invisible
-				player2.setVis(false);
+				if (player1.isBubble() == false) {
+					player1.setVis(false);
+					player2.setScore(player2.getScore()+1);
+					respawnDelay.add(new RespawnDelay(1000));
+				} else {
+					player1.setBubble(false);
+					player1.setPU(0);
+				}
+			} 
+			
+			// If player 2 bullet hits player 2
+			if (p2Bounds.intersects(bulletBounds)&&bullet.getBounce()) {
+				bullet.setVis(false);				
+				if (player2.isBubble() == false) {
+					player2.setVis(false);
+					player1.setScore(player2.getScore()+1);
+					respawnDelay.add(new RespawnDelay(1000));
+				} else {
+					player2.setBubble(false);
+					player2.setPU(0);
+				}
 			}
 		}
 	}
 	
-	public void tankvsTank(Tank player1, Tank player2) {
-		Shape p1Bounds = player1.getBounds();
-		AffineTransform af = new AffineTransform();
-		af.rotate(player1.getA() * Math.PI/180, player1.getX(), player1.getY());
-		p1Bounds = af.createTransformedShape(p1Bounds);
-		
-		Shape p2Bounds = player2.getBounds();
-		AffineTransform bf = new AffineTransform();
-		bf.rotate(player2.getA() * Math.PI/180, player2.getX(), player2.getY());
-		p2Bounds = bf.createTransformedShape(p2Bounds);	
-	
+	public void tankvsTank(Tank player1, Tank player2, Shape p1Bounds, Shape p2Bounds) {	
 		Area p1 = new Area(p1Bounds);
 		Area p2 = new Area(p2Bounds);
 		
@@ -267,9 +327,15 @@ public class ObjectInteraction {
 		}
 	}
 	
-	public void tankvsPowerUp() {
-		
+	public void tankvsPowerUp(Tank player1, ArrayList<PowerUp> powerUps, Shape p1Bounds) {
+		for (int i = 0; i < powerUps.size(); i++) {
+			if (p1Bounds.intersects(powerUps.get(i).getBounds())) {
+				GameState.getEffectTimer(player1.getID()).set(player1);
+				
+				player1.resetEffect();
+				powerUps.get(i).applyEffect(player1);
+				powerUps.remove(i);
+			}
+		}
 	}
-	
-	
 }

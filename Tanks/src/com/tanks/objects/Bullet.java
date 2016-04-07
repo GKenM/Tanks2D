@@ -8,8 +8,8 @@ public class Bullet extends GameObject{
 	private double velY;
 	private boolean bounce;
 	
-	public Bullet(int x, int y, int speed, int width, int height, double a) {
-		super(x, y, speed, width, height);
+	public Bullet(double x, double y, double speed, int width, int height, double a, int ID) {
+		super(x, y, speed, width, height, ID);
 		this.a = a;
 		this.velX = Math.round(speed * Math.cos(a * Math.PI/180));
 		this.velY = Math.round(speed * Math.sin(a * Math.PI/180));

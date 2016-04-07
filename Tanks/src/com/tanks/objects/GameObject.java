@@ -4,52 +4,54 @@ import java.awt.Rectangle;
 
 public class GameObject {
 
-	protected int x,y;
-	protected int velocityForward, velocityBackward;
+	protected double x,y;
+	protected double velocityForward, velocityBackward;
 	protected double a;
-	protected int speed;
+	protected double speed;
 	protected int width, height;
+	protected int ID; 
 	
-	public GameObject(int x, int y, int speed, int width, int height) {
+	public GameObject(double x, double y,double speed, int width, int height, int ID) {
 		this.x = x;
 		this.y = y;
 		this.speed = speed;
 		this.width = width;
 		this.height = height;
+		this.ID = ID;
 		velocityForward = 0;
 		velocityBackward = 0;
 		a = 0.0;
 	}
 	
-	public int getX() {
+	public double getX() {
 		return x;
 	}
 
-	public void setX(int x) {
+	public void setX(double x) {
 		this.x = x;
 	}
 
-	public int getY() {
+	public double getY() {
 		return y;
 	}
 
-	public void setY(int y) {
+	public void setY(double y) {
 		this.y = y;
 	}
 
-	public int getVelocityForward() {
+	public double getVelocityForward() {
 		return velocityForward;
 	}
 
-	public void setVelocityForward(int velocityForward) {
+	public void setVelocityForward(double velocityForward) {
 		this.velocityForward = velocityForward;
 	}
 	
-	public int getVelocityBackward() {
+	public double getVelocityBackward() {
 		return velocityBackward;
 	}
 
-	public void setVelocityBackward(int velocityBackward) {
+	public void setVelocityBackward(double velocityBackward) {
 		this.velocityBackward = velocityBackward;
 	}
 
@@ -73,11 +75,11 @@ public class GameObject {
 		this.height = height;
 	}
 
-	public int getSpeed() {
+	public double getSpeed() {
 		return speed;
 	}
 
-	public void setSpeed(int speed) {
+	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
 
@@ -85,7 +87,15 @@ public class GameObject {
 		this.a = a;
 	}
 	
+	public int getID() {
+		return ID;
+	}
+
+	public void setID(int iD) {
+		ID = iD;
+	}
+
 	public Rectangle getBounds() {
-		return new Rectangle(x-width/2, y-height/2, width,height);
+		return new Rectangle((int)x-width/2, (int)y-height/2, width,height);
 	}
 }

@@ -1,30 +1,25 @@
 package com.tanks.modes;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.Random;
 
 import com.tanks.main.game;
 import com.tanks.objects.Bullet;
+import com.tanks.objects.Enemy;
 import com.tanks.objects.GameObject;
-import com.tanks.objects.PowerUp;
 import com.tanks.objects.Tank;
-import com.tanks.reminders.PowerUpDestroyer;
 
-public class TrainingMode extends GameMode {
-	private Tank bot;
-    private static ArrayList<Bullet> botBullets;
-    private static ArrayList<PowerUp> powerUps; 
-    private PowerUp powerUp;
-    
-    public TrainingMode() {
-		bot = new Tank(0,0,tankSpeed,tankSize,tankSize, game.BOT);
+public class ArcadeMode extends GameMode {
+	
+	private Enemy bot;
+	private static ArrayList<Bullet> botBullets;
+	
+	public ArcadeMode() {
+		bot = new Enemy(0,0,tankSpeed,tankSize,tankSize, game.BOT);
 		botBullets = bot.getBullets();
-		powerUps = new ArrayList<PowerUp>();
 		reset();
 	}
 	@Override
@@ -37,11 +32,6 @@ public class TrainingMode extends GameMode {
 	    if (player1.getVis()){g2d.drawImage(image.getSprite(0), (int) player1.getX() -24 , (int) player1.getY() -24, null);}
 	    g2d.setTransform(oldTransform);
 	    
-	    // Bot Tank
-		g2d.setTransform(AffineTransform.getRotateInstance(Math.toRadians(bot.getA()), bot.getX(), bot.getY()));
-	    if (bot.getVis()){g2d.drawImage(image.getSprite(1), (int) bot.getX() -24 , (int) bot.getY() -24, null);}
-	    g2d.setTransform(oldTransform);
-	    
 	    // Missiles
 	    for (int i = 0; i < p1Bullets.size(); i++) {
 	    	bullet = p1Bullets.get(i);
@@ -49,19 +39,11 @@ public class TrainingMode extends GameMode {
 	    	g2d.drawImage(image.getSprite(4) , (int) bullet.getX() - 4 , (int) bullet.getY() -4, null);
 	    	
 	    }
- 	    
-	    // Power Ups
-	    g2d.setColor(Color.white);
-	    for (int i = 0; i < powerUps.size(); i++) {
-	    	powerUp = powerUps.get(i);
-	    	
-	    	g2d.fill(powerUp.getBounds());
-	    }
 	    
-	    // Power Up id
-	    g2d.setColor(Color.white); 
-	    g2d.drawString("PowerUP: " + player1.getPU(), 100, 100);
-		
+	    // Bot Tank
+		g2d.setTransform(AffineTransform.getRotateInstance(Math.toRadians(bot.getA()), bot.getX(), bot.getY()));
+	    if (bot.getVis()){g2d.drawImage(image.getSprite(1), (int) bot.getX() -24 , (int) bot.getY() -24, null);}
+	    g2d.setTransform(oldTransform);
 	}
 
 	@Override
@@ -73,12 +55,15 @@ public class TrainingMode extends GameMode {
 		p1Bounds = af.createTransformedShape(p1Bounds);
 		
 		Shape botBounds = bot.getBounds();
+		AffineTransform bf = new AffineTransform();
+		bf.rotate(bot.getA() * Math.PI/180, bot.getX(), bot.getY());
+		botBounds = bf.createTransformedShape(botBounds);
 		
 		mechanics.p1VsWalls(player1);
 		mechanics.bulletVsWalls(p1Bullets);
 		mechanics.tankVsBullet(player1, bot, p1Bullets, botBullets, p1Bounds, botBounds);
-		mechanics.tankvsTank(player1, bot, p1Bounds, botBounds);
-		mechanics.tankvsPowerUp(player1, powerUps, p1Bounds);
+		//mechanics.tankvsTank(player1, bot, p1Bounds, botBounds);
+		//mechanics.tankvsPowerUp(player1, powerUps, p1Bounds);
 		
 		
 		// Player and bullet movement
@@ -94,6 +79,9 @@ public class TrainingMode extends GameMode {
 				p1Bullets.remove(i);
 			}
 		}
+		
+		// AI
+		bot.update(player1);
 	}
 
 	@Override
@@ -114,21 +102,10 @@ public class TrainingMode extends GameMode {
 	public Tank getPlayer2() {
 		return null;
 	}
-	
+
+	@Override
 	public void spawnPowerup(ArrayList<GameObject> walls) {
-		Random rand = new Random();
-		int num = rand.nextInt(3) + 1;
 		
-		for (int i = 0; i < num; i++) {
-			powerUp = new PowerUp(0,0,0,24,24,game.POWERUP);
-			powerUp.setPosition(player1, bot, walls);
-			
-			int puID = rand.nextInt(5) + 1;
-			powerUp.setPuID(puID);
-			
-			powerUps.add(powerUp);
-		}
-		new PowerUpDestroyer(10,powerUps);
 	}
 
 }

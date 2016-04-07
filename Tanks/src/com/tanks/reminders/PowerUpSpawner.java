@@ -15,10 +15,14 @@ public class PowerUpSpawner {
 	}
 	
 	public void tick() {
-		if (tick == 30*30) {
+		if (tick == 10*30) {
 			GameState.getMode().spawnPowerup(walls);
 			tick = 0;
 		}
 		tick++;
+	}
+	
+	public void resetTick() {
+		tick = 0;
 	}
 }
