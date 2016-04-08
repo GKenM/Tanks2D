@@ -6,12 +6,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-public class OptionState extends State {
+public class MPState extends State{
 
-	public static boolean SOHighlighted = true;
-	public static boolean MOHighlighted = false;
-	
-	
+	public static boolean LMHighlighted = true;
+	public static boolean OPHighlighted = false;
 	
 	@Override
 	public void doDrawing(Graphics g) {
@@ -29,15 +27,18 @@ public class OptionState extends State {
 			g2d.fillRect(302,390,420,120);
 			g2d.setColor(Color.white);
 			g2d.fillRect(312,250,400,100);
-			g2d.fillRect(312,400,400,100);;
+			g2d.fillRect(312,400,400,100);
 			Font font = new Font("Serif", Font.PLAIN, 50);
 			g2d.setFont(font);
 			g2d.setColor(Color.black);
-			g2d.drawString("OPTION MENU", 330, 170);
+			g2d.drawString("MULTIPLAYER", 330, 170);
 			Font font2 = new Font("Serif", Font.PLAIN, 40);
 			g2d.setFont(font2);
-			g2d.drawString("SINGLEPLAYER", 330, 290);
-			g2d.drawString("MULTIPLAYER", 345, 440);
+			g2d.drawString("LOCAL ", 420, 290);
+			g2d.drawString("MULTIPLAYER", 350, 340);
+			g2d.drawString("OPTIONS", 400, 460);
+			
+			
 
 			g2d.setColor(Color.black);	
 			g2d.fillRect(20,620,80,80);
@@ -49,10 +50,8 @@ public class OptionState extends State {
 			g2d.drawString("ESC", 35, 655);
 			g2d.setFont(font);
 			g2d.drawString("↩", 40, 690);
-	
 
-
-			if(SOHighlighted == true){
+			if(LMHighlighted == true){
 
 				g2d.setColor(Color.white);
 				g2d.fillRect(302,240,420,120);
@@ -60,9 +59,10 @@ public class OptionState extends State {
 				g2d.fillRect(312,250,400,100);
 				g2d.setColor(Color.white);	
 				g2d.setFont(font2);
-				g2d.drawString("SINGLEPLAYER", 330, 290);
+				g2d.drawString("LOCAL ", 420, 290);
+				g2d.drawString("MULTIPLAYER", 350, 340);
 			}
-			if(MOHighlighted == true){
+			if(OPHighlighted == true){
 
 				g2d.setColor(Color.white);
 				g2d.fillRect(302,390,420,120);
@@ -70,13 +70,11 @@ public class OptionState extends State {
 				g2d.fillRect(312,400,400,100);
 				g2d.setColor(Color.white);	
 				g2d.setFont(font2);
-				g2d.drawString("MULTIPLAYER", 345, 440);
+				g2d.drawString("OPTIONS", 400, 460);
 			}
+
 	}
 
-
-
-	
 	@Override
 	public void tick() {
 		// TODO Auto-generated method stub
@@ -84,6 +82,4 @@ public class OptionState extends State {
 	}
 
 
-
 }
-		

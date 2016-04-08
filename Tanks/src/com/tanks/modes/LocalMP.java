@@ -17,7 +17,7 @@ import com.tanks.reminders.PowerUpDestroyer;
 
 public class LocalMP extends GameMode{
 	
-	private Tank player2;		
+	private static Tank player2;		
     private static ArrayList<Bullet> p2Bullets;
     private static ArrayList<PowerUp> powerUps; 
     private PowerUp powerUp;
@@ -129,13 +129,35 @@ public class LocalMP extends GameMode{
 		}
 	}
 	
-	public void reset() {
-		// Remove everything
+	public void respawn() {
+		// Remove bullets
 		if (p1Bullets.size() != 0) {p1Bullets.clear();}
 		if (p2Bullets.size() != 0) {p2Bullets.clear();}
-		// Reset everything
+		// Respawn tanks
 		player1.respawn(player1.getWidth(), 100, 192, 384, 0);
 		player2.respawn(924, 100-player2.getWidth(), 192, 384, 180);
+	}
+	
+	public void reset() {
+		this.respawn();
+		
+		// Reset player scores
+		player1.setScore(0);
+		player2.setScore(0);
+		
+		// Reset PowerUps
+		player1.setPU(0);
+		player1.setBubble(false);
+		player1.setSpeedMultiplier(1);
+		player1.setRof(2000);
+		
+		player2.setPU(0);
+		player2.setBubble(false);
+		player2.setSpeedMultiplier(1);
+		player2.setRof(2000);
+		
+		// Delete power ups
+		powerUps.clear();
 	}
 	
 	public Tank getPlayer1() {

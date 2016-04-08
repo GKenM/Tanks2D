@@ -22,7 +22,10 @@ public class LoadSprites {
 	            images.add(ImageIO.read(new File("Tanks/src/Images/missle1.png"))); //4
 	            images.add(ImageIO.read(new File("Tanks/src/Images/missle2.png"))); //5
 	            images.add(ImageIO.read(new File("Tanks/src/Images/wall1.png"))); //6
-	            
+	            images.add(ImageIO.read(new File("Tanks/src/Images/sidetank12.png")));//7
+	            images.add(ImageIO.read(new File("Tanks/src/Images/sidetank21.png")));//8
+	            images.add(ImageIO.read(new File("Tanks/src/Images/sidetank31.png")));//9
+	            images.add(ImageIO.read(new File("Tanks/src/Images/sidetank41.png")));//10
 	            
 	        } catch (IOException e) {
 	        }

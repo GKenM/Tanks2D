@@ -30,6 +30,7 @@ public abstract class GameMode {
 	
 	public abstract void doDrawing(Graphics g);
 	public abstract void tick();
+	public abstract void respawn();
 	public abstract void reset();
 	public abstract Tank getPlayer1();
 	public abstract Tank getPlayer2();

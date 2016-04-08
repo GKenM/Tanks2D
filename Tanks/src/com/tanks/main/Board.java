@@ -14,20 +14,29 @@ import com.tanks.states.State;
 import com.tanks.states.TitleState;
 import com.tanks.states.GameMenuState;
 import com.tanks.states.GameState;
+import com.tanks.states.MPOptionState;
+import com.tanks.states.MPState;
 import com.tanks.states.OptionState;
+import com.tanks.states.SPOptionState;
+import com.tanks.states.SPState;
 
 public class Board extends JPanel implements Runnable{
 
 	private static final long serialVersionUID = 7681044157732768854L;
 	private KeyboardInput keyIN;
-	private State currentState;
-	private TitleState title;
-	private GameState game;
-	private OptionState option;
-	private GameMenuState menu;
+	private static State currentState;
+	private static TitleState title;
+	private static GameState game;
+	private static OptionState option;
+	private static SPOptionState spOption;
+	private static MPOptionState mpOption;
+	private static GameMenuState menu;
+	private static SPState singleplayer;
+	private static MPState multiplayer;
 	
 	private Thread thread;
 	private boolean running = false;
+	private static boolean pause = false;
 	
 	int	fps = 30;
 	double averageFPS = 0;
@@ -55,28 +64,48 @@ public class Board extends JPanel implements Runnable{
 		title = new TitleState();
 		game = new GameState();
 		option = new OptionState();
+		spOption = new SPOptionState();
+		mpOption = new MPOptionState();
 		menu = new GameMenuState();
+		singleplayer = new SPState();
+		multiplayer = new MPState();
 		keyIN = new KeyboardInput();
 		
 		currentState = title;
 	
 	}
 	
-	public void stateChange() {
+	public static void stateChange() {
 		if (TitleState.isMenu == true){
 			currentState = title;
 		}
-
 		if (TitleState.isTraining == true){
 			currentState = game; 	
 		}
-		
+		if (TitleState.isLocalMP == true){
+			currentState = game; 	
+		}
+		if (TitleState.isArcade == true){
+			currentState = game; 	
+		}
 		if (TitleState.isOption == true){
 			currentState = option; 	
 		}		
+		if (TitleState.isSPOption == true){
+			currentState = spOption;	
+		}
+		if(TitleState.isMPOption == true){
+			currentState = mpOption;
+		}
 		if (TitleState.isGameMenu == true){
 			currentState = menu; 	
-		}		
+		}
+		if(TitleState.isSP == true){
+			currentState = singleplayer;
+		}
+		if(TitleState.isMP == true){
+			currentState = multiplayer;
+		}
 	}
 	
 	@Override
@@ -99,7 +128,7 @@ public class Board extends JPanel implements Runnable{
 				// add pause
 			startTime = System.nanoTime();
 			
-			tick();
+			if (pause == false) {tick();}
 			
 			URDTimeMillis = (System.nanoTime() - startTime)/1000000;
 			waitTime = targetTime - URDTimeMillis;
@@ -137,7 +166,7 @@ public class Board extends JPanel implements Runnable{
 		
 		Toolkit.getDefaultToolkit().sync();
 
-        System.out.println(fps);
+       // System.out.println(fps);
 		
 	}
 		
@@ -149,4 +178,13 @@ public class Board extends JPanel implements Runnable{
 			keyIN.keyRelease(e);
 		}
 	}
+
+	public static boolean isPause() {
+		return pause;
+	}
+
+	public static void setPause(boolean p) {
+		pause = p;
+	}
+	
 }
