@@ -85,12 +85,28 @@ public class ArcadeMode extends GameMode {
 	}
 
 	@Override
-	public void reset() {
-		// Remove everything
+	public void respawn() {
+		// Remove bullets
 		if (p1Bullets.size() != 0) {p1Bullets.clear();}
-		// Reset everything
+		// Respawn tanks
 		player1.respawn(player1.getWidth(), 100, 192, 384, 0);
 		bot.respawn(924, 100-bot.getWidth(), 192, 384, 180);
+	}
+	
+	public void reset() {
+		this.respawn();
+		
+		// Reset player scores
+		player1.setScore(0);
+		
+		// Reset PowerUps
+		player1.setPU(0);
+		player1.setBubble(false);
+		player1.setSpeedMultiplier(1);
+		player1.setRof(2000);
+		
+		// Delete power ups
+		//powerUps.clear();
 	}
 
 	@Override

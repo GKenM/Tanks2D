@@ -1,34 +1,16 @@
 package com.tanks.states;
+
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Color;
 
+public class SPState extends State{
 
-public class TitleState extends State{
-
-	public static boolean isMenu = true;
-	public static boolean isOption = false;
-	public static boolean isMPOption = false;
-	public static boolean isSPOption = false;
-	public static boolean isGameMenu = false;
-	public static boolean isSP = false;
-	public static boolean isMP = false;
-	public static boolean isTraining = false;
-	public static boolean isArcade = false;
-	public static boolean isLocalMP = false;
-	public static boolean returnPState = false;
-	
-	public static int prevState = 0; //1 Title Menu, 2 SP Menu, 3 MP Menu, 
-									//4 Training Mode, 5 Arcade Mode, 6 LocalM Mode, 7 OptionState
-	
-	
-	public static boolean SPHighlighted = true;
-	public static boolean MPHighlighted = false;
-	public static boolean OPHighlighted = false;
-	
-	
+	public static boolean TMHighlighted = true;
+	public static boolean AMHighlighted = false;
+	public static boolean LBHighlighted = false;
 	
 	@Override
 	public void doDrawing(Graphics g) {
@@ -52,14 +34,26 @@ public class TitleState extends State{
 			Font font = new Font("Serif", Font.PLAIN, 50);
 			g2d.setFont(font);
 			g2d.setColor(Color.black);
-			g2d.drawString("DANK TANKS", 330, 170);
+			g2d.drawString("SINGLE PLAYER", 300, 170);
 			Font font2 = new Font("Serif", Font.PLAIN, 40);
 			g2d.setFont(font2);
-			g2d.drawString("SINGLEPLAYER", 330, 310);
-			g2d.drawString("MULTIPLAYER", 345, 460);
-			g2d.drawString("OPTIONS", 410, 610);
+			g2d.drawString("TRAINING", 400, 310);
+			g2d.drawString("ARCADE", 420, 460);
+			g2d.drawString("LEADERBOARD", 340, 610);
+			
+			g2d.setColor(Color.black);	
+			g2d.fillRect(20,620,80,80);
+			g2d.setColor(Color.white);	
+			g2d.fillRect(30,630,60,60);
+			g2d.setColor(Color.black);
+			Font font3 = new Font("Serif", Font.PLAIN, 24);
+			g2d.setFont(font3);
+			g2d.drawString("ESC", 35, 655);
+			g2d.setFont(font);
+			g2d.drawString("↩", 40, 690);
 
-			if(SPHighlighted == true){
+
+			if(TMHighlighted == true){
 
 				g2d.setColor(Color.white);
 				g2d.fillRect(302,240,420,120);
@@ -67,9 +61,9 @@ public class TitleState extends State{
 				g2d.fillRect(312,250,400,100);
 				g2d.setColor(Color.white);	
 				g2d.setFont(font2);
-				g2d.drawString("SINGLEPLAYER", 330, 310);
+				g2d.drawString("TRAINING", 400, 310);
 			}
-			if(MPHighlighted == true){
+			if(AMHighlighted == true){
 
 				g2d.setColor(Color.white);
 				g2d.fillRect(302,390,420,120);
@@ -77,9 +71,9 @@ public class TitleState extends State{
 				g2d.fillRect(312,400,400,100);
 				g2d.setColor(Color.white);	
 				g2d.setFont(font2);
-				g2d.drawString("MULTIPLAYER", 345, 460);
+				g2d.drawString("ARCADE", 420, 460);
 			}
-			if(OPHighlighted == true){
+			if(LBHighlighted == true){
 
 				g2d.setColor(Color.white);			
 				g2d.fillRect(302,540,420,120);
@@ -87,7 +81,7 @@ public class TitleState extends State{
 				g2d.fillRect(312,550,400,100);
 				g2d.setColor(Color.white);	
 				g2d.setFont(font2);
-				g2d.drawString("OPTIONS", 410, 610);
+				g2d.drawString("LEADERBOARD", 340, 610);
 			}	
 
 	}
@@ -97,7 +91,6 @@ public class TitleState extends State{
 		// TODO Auto-generated method stub
 		
 	}
-
 
 
 }

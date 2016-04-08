@@ -16,8 +16,7 @@ public class RespawnDelay {
 		
 	class RemindTask extends TimerTask {
 		public void run() {
-			// Reset the game?? GameState.reset?? which will empty out everything
-			GameState.getMode().reset();
+			GameState.getMode().respawn();
 			timer.cancel();
 		}
 	}
