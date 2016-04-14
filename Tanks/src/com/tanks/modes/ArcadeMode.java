@@ -104,6 +104,11 @@ public class ArcadeMode extends GameMode {
 	    	powerUp = powerUps.get(i);
 	    	g2d.drawImage(Board.images.getSprite(16), (int) powerUp.getX()-12, (int) powerUp.getY()-12, null);
 	    }
+	    
+	    // Score Multiplier display
+	    if (scoreMP > 2) {
+	    	 g2d.drawString("x" + scoreMP, 125, 25);
+	    }
 	}
 	/*
 	 * Purpose of this function is to handle all the game mechanics in arcade mode

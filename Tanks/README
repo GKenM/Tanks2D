@@ -6,7 +6,7 @@ How to run the game -
 
 Note - The project was created on the standard JavaSE1.7 execution environment.
 
-Feature to look out for -
+Features to look out for -
 Leaderboard - if you get a top 5 score in arcade mode, you will be prompted to enter your score into the leaderboards where you will be asked to enter your name.
 HUD - the hud displays the game timer and player scores. Also displays the power up in play and the time left on the power up when a power up is picked up.
 Endgame menu - Custom messages are shown depending on your score in arcade mode, and also kill/death stats are shown.
