@@ -1,3 +1,8 @@
+/*
+ * This class opens all the images used in the game and stores them in an arraylist of which makes them easily accessible.  
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
+
 package com.tanks.resources;
 
 import java.awt.image.BufferedImage;
@@ -12,6 +17,7 @@ public class LoadSprites {
 	
 	private ArrayList<BufferedImage> images;
 	
+	//images loaded and stored in arraylist, can be accessed by the assigned intereger number
 	public LoadSprites(){
 		images = new ArrayList<BufferedImage>();   // "*" created own images using Pinta Image Editor
 		 try {													// index position 

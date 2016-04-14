@@ -1,3 +1,7 @@
+/**
+ * This class handles the keyboard logging
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.main;
 
 import java.io.BufferedWriter;
@@ -20,28 +24,28 @@ public class Log {
 	 * Create a new file with an unique name
 	 */
 	public Log() {
+		// Generate a random file name based on current date and time
 		cal = Calendar.getInstance();
 		sdf = new SimpleDateFormat("yyMMddHHmmss");
 		fileName = "Log" + sdf.format(cal.getTime());
 		try {
+			// Create a new file using the randomly generated name
 			file = new File(System.getProperty("user.dir") + "/Tanks/src/Logs", fileName);
 			if (!file.createNewFile()) {
 				System.out.println("FILE EXISTS");
 			}
 			
-			// PRINT THE GAME MODE AND MAYBE TITLES 
+			// In the first line of the file, print the game mode and titles
 			FileWriter fw = new FileWriter(file.getAbsolutePath(), true);
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter out = new PrintWriter(bw);
 			
 			String gameMode = "";
-			
 			if (TitleState.isArcade) {gameMode = "Arcade Mode";}
 			if (TitleState.isLocalMP) {gameMode = "Local Multiplayer";}
 			if (TitleState.isTraining) {gameMode = "Training Mode";}
 			
 			out.println(gameMode);
-			
 			String format = "%-20s%s%n";
 			out.format(format, "Time", "Keys in action");
 			out.close();
@@ -62,6 +66,7 @@ public class Log {
 			sdf = new SimpleDateFormat("HH:mm:ss");
 			int temp = Calendar.getInstance().get(Calendar.MILLISECOND);
 			
+			// Read in each key in action at that time
 			String keys = "";
 			if(KeyboardInput.logW) {keys += " W ";}
 			if(KeyboardInput.logS) {keys += " S ";}

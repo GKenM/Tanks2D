@@ -1,3 +1,7 @@
+/**
+ * This class handles the training game mode
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.modes;
 
 import java.awt.Color;
@@ -30,6 +34,9 @@ public class TrainingMode extends GameMode {
 		powerUps = new ArrayList<PowerUp>();
 		reset();
 	}
+    /*
+     * Purpose of this function is to handle all the graphics in traning mode
+     */
 	@Override
 	public void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;	
@@ -40,12 +47,12 @@ public class TrainingMode extends GameMode {
 	    if (player1.getVis()){g2d.drawImage(Board.images.getSprite(0), (int) player1.getX() -24 , (int) player1.getY() -24, null);}
 	    g2d.setTransform(oldTransform);
 	    
-	    // Bot Tank
+	    // Stationart bot Tank
 		g2d.setTransform(AffineTransform.getRotateInstance(Math.toRadians(bot.getA()), bot.getX(), bot.getY()));
 	    if (bot.getVis()){g2d.drawImage(Board.images.getSprite(1), (int) bot.getX() -24 , (int) bot.getY() -24, null);}
 	    g2d.setTransform(oldTransform);
 	    
-	    // Missiles
+	    // Player bullets
 	    for (int i = 0; i < p1Bullets.size(); i++) {
 	    	bullet = p1Bullets.get(i);
 	    	
@@ -53,6 +60,7 @@ public class TrainingMode extends GameMode {
 	    	
 	    }
 	    
+	    // Set the font for in game HUD
 	    g2d.setColor(Color.white); 
 		Font font = new Font("Serif", Font.PLAIN, 20);
 		g2d.setFont(font);
@@ -79,17 +87,21 @@ public class TrainingMode extends GameMode {
 	    	g2d.drawImage(Board.images.getSprite(16), (int) powerUp.getX()-12, (int) powerUp.getY()-12, null);
 	    }
 	}
-
+	/*
+	 * Purpose of this function is to handle all the game mechanics of training mode
+	 */
 	@Override
 	public void tick() {
-		// Object Interactions
+		// Rotate player hitbox
 		Shape p1Bounds = player1.getBounds();
 		AffineTransform af = new AffineTransform();
 		af.rotate(player1.getA() * Math.PI/180, player1.getX(), player1.getY());
 		p1Bounds = af.createTransformedShape(p1Bounds);
 		
+		// Create the stationary bots hitbox
 		Shape botBounds = bot.getBounds();
 		
+		// Object interactions between player and bot and the game environment
 		mechanics.p1VsWalls(player1);
 		mechanics.bulletVsWalls(p1Bullets);
 		mechanics.tankVsBullet(player1, bot, p1Bullets, botBullets, p1Bounds, botBounds);
@@ -111,7 +123,9 @@ public class TrainingMode extends GameMode {
 			}
 		}
 	}
-
+	/*
+	 * Purpose of this function is to handle respawning of the player and bot
+	 */
 	@Override
 	public void respawn() {
 		// Remove bullets
@@ -148,15 +162,20 @@ public class TrainingMode extends GameMode {
 	public Tank getPlayer2() {
 		return null;
 	}
-	
+	/*
+	 * Purpose of this function is to spawn powerups in training mode
+	 */
 	public void spawnPowerup(ArrayList<GameObject> walls) {
+		// Randomly generate the number of powerups to spawn
 		Random rand = new Random();
 		int num = rand.nextInt(3) + 1;
 		
+		// Loop through the number of powerups
 		for (int i = 0; i < num; i++) {
 			powerUp = new PowerUp(0,0,0,24,24,game.POWERUP);
 			powerUp.setPosition(player1, bot, walls, powerUps);
 			
+			// Randomly generate the type of powerup
 			int puID = rand.nextInt(5) + 1;
 			powerUp.setPuID(puID);
 			

@@ -1,0 +1,15 @@
+How to run the game - 
+1) Pull the Tanks file from bitbucket to your git folder
+2) Open the project in eclipse
+3) Navigate to /Tanks/src/com/tanks/main
+4) Open the game.java file and press run on eclipse
+
+Note - The project was created on the standard JavaSE1.7 execution environment.
+
+Feature to look out for -
+Leaderboard - if you get a top 5 score in arcade mode, you will be prompted to enter your score into the leaderboards where you will be asked to enter your name.
+HUD - the hud displays the game timer and player scores. Also displays the power up in play and the time left on the power up when a power up is picked up.
+Endgame menu - Custom messages are shown depending on your score in arcade mode, and also kill/death stats are shown.
+Control schemes - you can switch between 2 control schemes if your playing single player game modes. These can work mid game, if you change them via the option menu in the in-game menu (accessed by esc).
+Changing Colour of tanks - you can change the colour of your tanks for the local multiplayer game mode. Can be accessed in the multiplayer option menu.
+Randomly selected maps - there are 3 different maps, one of them is selected randomly when you start any game mode.

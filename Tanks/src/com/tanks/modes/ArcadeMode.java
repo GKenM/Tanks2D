@@ -1,3 +1,7 @@
+/**
+ * This class handles the arcade game mode
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.modes;
 
 import java.awt.Color;
@@ -20,7 +24,6 @@ import com.tanks.objects.Walls;
 import com.tanks.reminders.DifficultyTimer;
 import com.tanks.reminders.PowerUpDestroyer;
 
-// TWEAK DIFFICULTY
 public class ArcadeMode extends GameMode {
 
 	private Walls walls;
@@ -44,6 +47,9 @@ public class ArcadeMode extends GameMode {
 		
 		this.reset();
 	}
+	/*
+	 * Purpose of this function is to handle all the drawing of arcade mode
+	 */
 	@Override
 	public void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;	
@@ -54,14 +60,13 @@ public class ArcadeMode extends GameMode {
 	    if (player1.getVis()){g2d.drawImage(Board.images.getSprite(0), (int) player1.getX() -24 , (int) player1.getY() -24, null);}
 	    g2d.setTransform(oldTransform);
 	    
-	    // Missiles
+	    // Player bullets
 	    for (int i = 0; i < p1Bullets.size(); i++) {
 	    	bullet = p1Bullets.get(i);
-	    	
 	    	g2d.drawImage(Board.images.getSprite(4) , (int) bullet.getX() - 4 , (int) bullet.getY() -4, null);
-	    	
 	    }
 	    
+	    // Draw the bots in play and thier bullets in play
 	    for (int i = 0; i < bots.size(); i++) {
 	    	bot = bots.get(i);
 			g2d.setTransform(AffineTransform.getRotateInstance(Math.toRadians(bot.getA()), bot.getX(), bot.getY()));
@@ -69,14 +74,11 @@ public class ArcadeMode extends GameMode {
 		    g2d.setTransform(oldTransform);
 		    
 		    ArrayList<Bullet> botBullets = bot.getBullets();
-		    
-
 		    for (int j = 0; j < botBullets.size(); j++) {
-
 		    	g2d.drawImage(Board.images.getSprite(5) ,(int) botBullets.get(j).getX() - 4 , (int) botBullets.get(j).getY() -4, null);
 		    }
 	    }
-	    
+	    // Set up font for game HUD
 	    g2d.setColor(Color.white); 
 		Font font = new Font("Serif", Font.PLAIN, 20);
 		g2d.setFont(font);
@@ -103,31 +105,37 @@ public class ArcadeMode extends GameMode {
 	    	g2d.drawImage(Board.images.getSprite(16), (int) powerUp.getX()-12, (int) powerUp.getY()-12, null);
 	    }
 	}
-
+	/*
+	 * Purpose of this function is to handle all the game mechanics in arcade mode
+	 */
 	@Override
-	public void tick() {			
+	public void tick() {
+		// Run the difficulty timer and set the appropriate difficulty
 		difficulty.tick();
-		
 		this.setDifficulty();
 		
-		// Object Interactions
+		// Rotate the player 1 hit box
 		Shape p1Bounds = player1.getBounds();
 		AffineTransform af = new AffineTransform();
 		af.rotate(player1.getA() * Math.PI/180, player1.getX(), player1.getY());
 		p1Bounds = af.createTransformedShape(p1Bounds);
 		
+		// Loop through every bot in play
 		for (int i = 0; i < bots.size(); i++) {
 			bot = bots.get(i);
+			
+			// Update each bots movement
 			bot.update(player1, p1Bounds,bots);
 			
+			// Rotate each bots hitboxes
 			Shape botBounds = bot.getBounds();
 			AffineTransform bf = new AffineTransform();
 			bf.rotate(bot.getA() * Math.PI/180, bot.getX(), bot.getY());
 			botBounds = bf.createTransformedShape(botBounds);
-
+			
+			// Loop through each bot's bullets in play, update movement, check for interactions with walls
 		    ArrayList<Bullet> botBullets = bot.getBullets();
 			mechanics.bulletVsWalls(botBullets);
-		    
 		    for (int j = 0; j < botBullets.size(); j++) {
 		    	botBullets.get(j).move();
 		    	
@@ -135,10 +143,11 @@ public class ArcadeMode extends GameMode {
 					botBullets.remove(j);
 				}
 		    }
-		    
+		    // Object interaction between each bot and player
 		    mechanics.tankvsTank(player1, bot, p1Bounds, botBounds);
 		}
 		
+		// Object Interactions for player 1 with walls, bullets, bots, and powerups
 		mechanics.p1VsWalls(player1);
 		mechanics.bulletVsWalls(p1Bullets);
 		mechanics.bulletVsBot(player1, bots, p1Bullets, p1Bounds, scoreMP);
@@ -150,6 +159,7 @@ public class ArcadeMode extends GameMode {
 		player1.moveForward();
 		player1.moveBackward();
 		
+		// Loop through player's bullets and update each one
 		for (int i = 0; i < p1Bullets.size(); i++) {
 			bullet = p1Bullets.get(i);
 			bullet.move();
@@ -159,7 +169,9 @@ public class ArcadeMode extends GameMode {
 			}
 		}
 	}
-
+	/*
+	 * Purpose of this function is to handle respawning of player 1 and bots
+	 */
 	@Override
 	public void respawn() {
 		player1.respawn(player1.getWidth(), 100, 192, 384, 0);
@@ -167,7 +179,7 @@ public class ArcadeMode extends GameMode {
 		difficulty.reset(); 
 		bots.clear();
 	}
-	
+
 	public void reset() {
 		this.respawn();
 		
@@ -195,16 +207,21 @@ public class ArcadeMode extends GameMode {
 	public Tank getPlayer2() {
 		return null;
 	}
-
+	/*
+	 * Purpose of this function is to spawn powerups in arcade mode
+	 */
 	@Override
 	public void spawnPowerup(ArrayList<GameObject> walls) {
+		// Randomly generate the number of powerups to spawn
 		Random rand = new Random();
 		int num = rand.nextInt(3) + 1;
 		
+		// Loop through the number of powerups
 		for (int i = 0; i < num; i++) {
 			powerUp = new PowerUp(0,0,0,24,24,game.POWERUP);
 			powerUp.setPosition(player1, player1, walls, powerUps);
 			
+			// Randomly generate the type of powerup
 			int puID = rand.nextInt(5) + 1;
 			powerUp.setPuID(puID);
 			
@@ -212,8 +229,11 @@ public class ArcadeMode extends GameMode {
 		}
 		new PowerUpDestroyer(10,powerUps);
 	}
-	
+	/*
+	 * Purpose of this function is to handle the difficulty stages, according to how long player lasts without dieing
+	 */
 	public void setDifficulty() {
+		// Add a new bot each stage and increase the score multiplier
 		if (difficulty.getStage() == 1 && bots.size() == 0) {
 			bots.add(new Enemy(0,0,botSpeed,botSize,botSize,botRof,game.BOT,player1,walls));
 			bots.add(new Enemy(0,0,botSpeed,botSize,botSize,botRof,game.BOT,player1,walls));

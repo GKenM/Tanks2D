@@ -1,3 +1,7 @@
+/**
+ * This class creates a grid based map which is used to build maps
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.maps;
 
 public class Grid {

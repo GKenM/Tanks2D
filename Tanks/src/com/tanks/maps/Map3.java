@@ -1,3 +1,7 @@
+/**
+ * This class creates the third map using the grid based map
+ * Author: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.maps;
 
 public class Map3 extends Grid {
