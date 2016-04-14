@@ -6,14 +6,19 @@ import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 
 import javax.swing.JPanel;
 
 import com.tanks.inputs.KeyboardInput;
+import com.tanks.resources.LoadSprites;
+import com.tanks.resources.Sound;
 import com.tanks.states.State;
 import com.tanks.states.TitleState;
+import com.tanks.states.EndGameState;
 import com.tanks.states.GameMenuState;
 import com.tanks.states.GameState;
+import com.tanks.states.LeaderBoard;
 import com.tanks.states.MPOptionState;
 import com.tanks.states.MPState;
 import com.tanks.states.OptionState;
@@ -21,8 +26,11 @@ import com.tanks.states.SPOptionState;
 import com.tanks.states.SPState;
 
 public class Board extends JPanel implements Runnable{
-
 	private static final long serialVersionUID = 7681044157732768854L;
+	
+	public static LoadSprites images;
+	public static HashMap<String, Sound> sounds;
+	
 	private KeyboardInput keyIN;
 	private static State currentState;
 	private static TitleState title;
@@ -33,6 +41,8 @@ public class Board extends JPanel implements Runnable{
 	private static GameMenuState menu;
 	private static SPState singleplayer;
 	private static MPState multiplayer;
+	private static EndGameState endGame;
+	private static LeaderBoard leaderB;
 	
 	private Thread thread;
 	private boolean running = false;
@@ -43,6 +53,20 @@ public class Board extends JPanel implements Runnable{
 	
 	public Board() {
 		super();
+
+		images = new LoadSprites();
+		sounds = new HashMap<String, Sound>();
+		sounds.put("bgm1", new Sound(Sound.bgm1, true));
+		sounds.put("bgm2", new Sound(Sound.bgm2, true));
+		sounds.put("tap", new Sound(Sound.sTap, false));
+		sounds.put("bash", new Sound(Sound.sBash, false));
+		sounds.put("fire", new Sound(Sound.sTankFiring, false));
+		sounds.put("le", new Sound(Sound.sLExplosion, false));
+		sounds.put("e", new Sound(Sound.sExplosion, false));
+		sounds.put("powup", new Sound(Sound.sPowerUP, false));
+		sounds.put("powdown", new Sound(Sound.sPowerDown, false));
+		sounds.put("bounce", new Sound(Sound.sBounce, false));
+		
 		KeyListener temp = new Control();
 		addKeyListener(temp);
 		setFocusable(true);
@@ -70,23 +94,23 @@ public class Board extends JPanel implements Runnable{
 		singleplayer = new SPState();
 		multiplayer = new MPState();
 		keyIN = new KeyboardInput();
+		endGame = new EndGameState();
+		leaderB = new LeaderBoard();
 		
 		currentState = title;
-	
+		sounds.get("bgm1").play();
 	}
 	
 	public static void stateChange() {
 		if (TitleState.isMenu == true){
 			currentState = title;
+			sounds.get("bgm2").stop();
+			sounds.get("bgm1").play();
 		}
-		if (TitleState.isTraining == true){
+		if (TitleState.isTraining == true || TitleState.isArcade == true || TitleState.isLocalMP == true){
 			currentState = game; 	
-		}
-		if (TitleState.isLocalMP == true){
-			currentState = game; 	
-		}
-		if (TitleState.isArcade == true){
-			currentState = game; 	
+			sounds.get("bgm1").stop();
+			sounds.get("bgm2").play();
 		}
 		if (TitleState.isOption == true){
 			currentState = option; 	
@@ -105,6 +129,14 @@ public class Board extends JPanel implements Runnable{
 		}
 		if(TitleState.isMP == true){
 			currentState = multiplayer;
+		}
+		if(TitleState.isEndGame == true){
+			currentState = endGame;
+			sounds.get("bgm2").stop();
+			sounds.get("bgm1").play();
+		}
+		if(TitleState.isLB == true) {
+			currentState = leaderB;
 		}
 	}
 	
@@ -146,6 +178,7 @@ public class Board extends JPanel implements Runnable{
 				averageFPS = Math.round(1000.0 / ((totalTime/frameCount) / 1000000));
 				frameCount = 0;
 				totalTime = 0;
+				
 			}
 		}
 	}
@@ -166,7 +199,7 @@ public class Board extends JPanel implements Runnable{
 		
 		Toolkit.getDefaultToolkit().sync();
 
-       // System.out.println(fps);
+	//	System.out.println(fps);
 		
 	}
 		

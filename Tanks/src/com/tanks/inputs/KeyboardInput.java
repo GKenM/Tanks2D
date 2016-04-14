@@ -1,10 +1,17 @@
+/**
+ * This class handles all the keyboard inputs including the menu system
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.inputs;
 
 import java.awt.event.KeyEvent;
 
 import com.tanks.main.Board;
 import com.tanks.objects.Tank;
+import com.tanks.states.EndGameState;
+import com.tanks.states.GameMenuState;
 import com.tanks.states.GameState;
+import com.tanks.states.LeaderBoard;
 import com.tanks.states.MPOptionState;
 import com.tanks.states.MPState;
 import com.tanks.states.OptionState;
@@ -13,6 +20,9 @@ import com.tanks.states.SPState;
 import com.tanks.states.TitleState;
 
 public class KeyboardInput {
+	
+	// Boolean variables used only for logging key presses
+	public static boolean logW, logS, logA, logD, logSpace, logUp, logDown, logLeft, logRight, logEnter = false;
 	
 	private Tank player1;
 	private Tank player2;
@@ -32,6 +42,8 @@ public class KeyboardInput {
 		}
 	}
 	
+	
+	
 	public void keyPress(KeyEvent e) {
 		// ####################################################################################
 		// Tank controls
@@ -42,34 +54,44 @@ public class KeyboardInput {
 			if (SPOptionState.control1 == true) {
 				if (e.getKeyCode() == KeyEvent.VK_W) {
 					player1.setVelocityForward(player1.getSpeed());
+					logW = true;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_S) {
 					player1.setVelocityBackward(player1.getSpeed());
+					logS = true;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_A) {
 					player1.setA(player1.getA() - 22.5);
+					logA = true;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_D) {
 					player1.setA(player1.getA() + 22.5);
+					logD = true;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-					if (player1.isFired() == false) {player1.fire();}
+					if (player1.isFired() == false) {player1.fire();}	
+					logSpace = true;
 				}
 			} else if (SPOptionState.control2 == true) {
 				if (e.getKeyCode() == KeyEvent.VK_UP) {
 					player1.setVelocityForward(player1.getSpeed());
+					logUp = true;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 					player1.setVelocityBackward(player1.getSpeed());
+					logDown = true;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 					player1.setA(player1.getA() - 22.5);
+					logLeft = true;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					player1.setA(player1.getA() + 22.5);
+					logRight = true;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (player1.isFired() == false) {player1.fire();}
+					logEnter = true;
 				}
 			}
 		}	
@@ -79,34 +101,44 @@ public class KeyboardInput {
 			// Player 1
 			if (e.getKeyCode() == KeyEvent.VK_W) {
 				player1.setVelocityForward(player1.getSpeed());
+				logW = true;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_S) {
 				player1.setVelocityBackward(player1.getSpeed());
+				logS = true;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_A) {
 				player1.setA(player1.getA() - 22.5);
+				logA = true;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_D) {
 				player1.setA(player1.getA() + 22.5);
+				logD = true;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 				if (player1.isFired() == false) {player1.fire();}
+				logSpace = true;
 			}
 			// Player 2
 			if (e.getKeyCode() == KeyEvent.VK_UP) {
 				player2.setVelocityForward(player2.getSpeed());
+				logUp = true;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 				player2.setVelocityBackward(player2.getSpeed());
+				logDown = true;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 				player2.setA(player2.getA() - 22.5);
+				logLeft = true;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 				player2.setA(player2.getA() + 22.5);
+				logRight = true;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 				if (player2.isFired() == false) {player2.fire();}
+				logEnter =true;
 			}
 		}
 		
@@ -115,6 +147,16 @@ public class KeyboardInput {
 		// #################################################################################### 
 		if(TitleState.isMenu == true){
 			// Highlighting each option as you navigate them
+			if (e.getKeyCode() == KeyEvent.VK_G) {
+				TitleState.isSP = false;
+				TitleState.isOption = false;
+				TitleState.isMP = false;
+				TitleState.isMenu = false;
+				TitleState.isEndGame = true;
+				Board.stateChange();
+				
+			}
+			
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 				if (TitleState.SPHighlighted == true){
 					TitleState.SPHighlighted = false;
@@ -148,6 +190,7 @@ public class KeyboardInput {
 			
 			// Press you press enter on a highlighted option, you change state
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				Board.sounds.get("bash").play();
 				// Go into Singleplayer menu
 				if (TitleState.SPHighlighted == true){
 					TitleState.isSP = true;
@@ -212,6 +255,7 @@ public class KeyboardInput {
 			
 			// When you press enter on a highlighted option, change the state to that option
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				Board.sounds.get("bash").play();
 				// Go into training mode
 				if (SPState.TMHighlighted == true){
 					TitleState.isTraining = true;
@@ -242,9 +286,10 @@ public class KeyboardInput {
 				}
 				// go into leaderboards
 				if (SPState.LBHighlighted == true){
+					LeaderBoard.readLBFile();
 					TitleState.isTraining = false;
 					TitleState.isArcade = false;
-					TitleState.isOption = true;
+					TitleState.isLB = true;
 					TitleState.prevState = 2; // necessary?
 					TitleState.isSP = false;
 					Board.stateChange();
@@ -252,6 +297,7 @@ public class KeyboardInput {
 			}
 			// If you press escape, go back to the titlescreen state
 			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				Board.sounds.get("tap").play();
 				if(TitleState.isSP == true){
 					TitleState.isSP = false;
 					TitleState.isMenu = true;
@@ -286,6 +332,7 @@ public class KeyboardInput {
 			
 			// If you press enter on a highlighted option, go into that option
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				Board.sounds.get("bash").play();
 				// go into local multiplayer mode
 				if (MPState.LMHighlighted == true){
 					TitleState.isLocalMP = true;
@@ -311,6 +358,7 @@ public class KeyboardInput {
 			
 			// if you press escape, go back to titlescreen
 			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				Board.sounds.get("tap").play();
 				if(TitleState.isMP == true){
 					TitleState.isMP = false;
 					TitleState.isMenu = true;
@@ -345,6 +393,7 @@ public class KeyboardInput {
 			
 			// If you press enter on a highlighted option, go into that option
 			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				Board.sounds.get("bash").play();
 				if (OptionState.SOHighlighted == true){
 					TitleState.isSPOption = true;
 					TitleState.isMPOption = false;
@@ -362,6 +411,7 @@ public class KeyboardInput {
 			
 			// Go back to title screen when you press escape
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+				Board.sounds.get("tap").play();
 				TitleState.isOption = false;
 				TitleState.isMenu = true;
 				Board.stateChange();
@@ -372,12 +422,25 @@ public class KeyboardInput {
 		// Singleplayer option menu controls
 		// #################################################################################### 
 		else if(TitleState.isSPOption == true){
-			// Go back to the options menu
-			if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+			// Go back to the options menu or in game menu
+		if((e.getKeyCode() == KeyEvent.VK_ESCAPE) && ((TitleState.prevState == 8)))  {	
+			Board.sounds.get("tap").play();
+			if(TitleState.prevState2 == 4){
+				TitleState.prevState = 4;
+			}
+			if(TitleState.prevState2 == 5){
+				TitleState.prevState = 5;
+			}
+			TitleState.isSPOption = false;
+			TitleState.isGameMenu = true;
+			Board.stateChange();
+		} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+			Board.sounds.get("tap").play();
 				TitleState.isSPOption = false;
 				TitleState.isOption = true;
 				Board.stateChange();
-			}
+		}
+			
 			// Navigate and enable between the two control options
 			if(e.getKeyCode() == KeyEvent.VK_RIGHT){
 				if(SPOptionState.control1 == true){
@@ -397,81 +460,92 @@ public class KeyboardInput {
 		// Multiplayer option menu controls
 		// #################################################################################### 
 		else if(TitleState.isMPOption == true){
-			// Go back to options menu
+			// Go back to options menu or in Game menu
 			if((e.getKeyCode() == KeyEvent.VK_ESCAPE) && (TitleState.prevState == 3)){
+				Board.sounds.get("tap").play();
 				TitleState.isMPOption = false;
 				TitleState.isMP= true;
 				Board.stateChange();
-			} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {	
+			} else if((e.getKeyCode() == KeyEvent.VK_ESCAPE) && ((TitleState.prevState == 8)))  {	
+				Board.sounds.get("tap").play();
+				if(TitleState.prevState2 == 6){
+					TitleState.prevState = 6;
+				}
+				TitleState.isMPOption = false;
+				TitleState.isGameMenu = true;
+				Board.stateChange();
+			} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				Board.sounds.get("tap").play();
 				TitleState.isMPOption = false;
 				TitleState.isOption = true;
 				Board.stateChange();
-			}
+			}	
+			
 			// Navigate for player 1 tank selection
 			if(e.getKeyCode() == KeyEvent.VK_W){
 				MPOptionState.leftUp = true;
-				if(MPOptionState.p1redtank == true){
-					MPOptionState.p1redtank = false;
-					MPOptionState.p1violettank = true;
-				} else if(MPOptionState.p1violettank == true){
-					MPOptionState.p1bluetank = true;
-					MPOptionState.p1violettank = false;
-				} else if(MPOptionState.p1bluetank == true){
-					MPOptionState.p1bluetank = false;
-					MPOptionState.p1yellowtank = true;
-				} else if(MPOptionState.p1yellowtank == true){
-					MPOptionState.p1redtank = true;
-					MPOptionState.p1yellowtank = false;
+				if(MPOptionState.p1tanks[0] == true){
+					MPOptionState.p1tanks[0]= false;
+					MPOptionState.p1tanks[3] = true;
+				} else if(MPOptionState.p1tanks[3] == true){
+					MPOptionState.p1tanks[2] = true;
+					MPOptionState.p1tanks[3] = false;
+				} else if(MPOptionState.p1tanks[2] == true){
+					MPOptionState.p1tanks[2] = false;
+					MPOptionState.p1tanks[1] = true;
+				} else if(MPOptionState.p1tanks[1] == true){
+					MPOptionState.p1tanks[0] = true;
+					MPOptionState.p1tanks[1] = false;
 				}
 			}
 			if(e.getKeyCode() == KeyEvent.VK_S){
 				MPOptionState.leftDown = true;
-				if(MPOptionState.p1redtank == true){
-					MPOptionState.p1redtank = false;
-					MPOptionState.p1yellowtank = true;
-				} else if(MPOptionState.p1yellowtank == true){
-					MPOptionState.p1bluetank = true;
-					MPOptionState.p1yellowtank = false;
-				} else if(MPOptionState.p1bluetank == true){
-					MPOptionState.p1bluetank = false;
-					MPOptionState.p1violettank = true;
-				} else if(MPOptionState.p1violettank == true){
-					MPOptionState.p1redtank = true;
-					MPOptionState.p1violettank = false;
+				if(MPOptionState.p1tanks[0] == true){
+					MPOptionState.p1tanks[0] = false;
+					MPOptionState.p1tanks[1] = true;
+				} else if(MPOptionState.p1tanks[1] == true){
+					MPOptionState.p1tanks[2] = true;
+					MPOptionState.p1tanks[1] = false;
+				} else if(MPOptionState.p1tanks[2] == true){
+					MPOptionState.p1tanks[2] = false;
+					MPOptionState.p1tanks[3] = true;
+				} else if(MPOptionState.p1tanks[3] == true){
+					MPOptionState.p1tanks[0] = true;
+					MPOptionState.p1tanks[3] = false;
 				}
 			}
 			
 			// Navigate for player 2 control selection
 			if(e.getKeyCode() == KeyEvent.VK_UP){
 				MPOptionState.rightUp = true;
-				if(MPOptionState.p2redtank == true){
-					MPOptionState.p2redtank = false;
-					MPOptionState.p2violettank = true;
-				} else if(MPOptionState.p2violettank == true){
-					MPOptionState.p2bluetank = true;
-					MPOptionState.p2violettank = false;
-				} else if(MPOptionState.p2bluetank == true){
-					MPOptionState.p2bluetank = false;
-					MPOptionState.p2yellowtank = true;
-				} else if(MPOptionState.p2yellowtank == true){
-					MPOptionState.p2redtank = true;
-					MPOptionState.p2yellowtank = false;
+				if(MPOptionState.p2tanks[0] == true){
+					MPOptionState.p2tanks[0] = false;
+					MPOptionState.p2tanks[3] = true;
+				} else if(MPOptionState.p2tanks[3] == true){
+					MPOptionState.p2tanks[2] = true;
+					MPOptionState.p2tanks[3] = false;
+				} else if(MPOptionState.p2tanks[2] == true){
+					MPOptionState.p2tanks[2] = false;
+					MPOptionState.p2tanks[1] = true;
+				} else if(MPOptionState.p2tanks[1] == true){
+					MPOptionState.p2tanks[0] = true;
+					MPOptionState.p2tanks[1] = false;
 				}
 			}
 			if(e.getKeyCode() == KeyEvent.VK_DOWN){
 				MPOptionState.rightDown = true;
-				if(MPOptionState.p2redtank == true){
-					MPOptionState.p2redtank = false;
-					MPOptionState.p2yellowtank = true;
-				} else if(MPOptionState.p2yellowtank == true){
-					MPOptionState.p2bluetank = true;
-					MPOptionState.p2yellowtank = false;
-				} else if(MPOptionState.p2bluetank == true){
-					MPOptionState.p2bluetank = false;
-					MPOptionState.p2violettank = true;
-				} else if(MPOptionState.p2violettank == true){
-					MPOptionState.p2redtank = true;
-					MPOptionState.p2violettank = false;
+				if(MPOptionState.p2tanks[0] == true){
+					MPOptionState.p2tanks[0] = false;
+					MPOptionState.p2tanks[1] = true;
+				} else if(MPOptionState.p2tanks[1]== true){
+					MPOptionState.p2tanks[2] = true;
+					MPOptionState.p2tanks[1] = false;
+				} else if(MPOptionState.p2tanks[2]== true){
+					MPOptionState.p2tanks[2] = false;
+					MPOptionState.p2tanks[3] = true;
+				} else if(MPOptionState.p2tanks[3] == true){
+					MPOptionState.p2tanks[0] = true;
+					MPOptionState.p2tanks[3] = false;
 				}
 			}
 			
@@ -493,12 +567,20 @@ public class KeyboardInput {
 			}
 			// Go to escape menu
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+				Board.sounds.get("tap").play();
 				TitleState.isTraining = false;
 				TitleState.isGameMenu = true;
+				TitleState.prevState = 4;
 				Board.stateChange();
 			}
 			// Skip the game and go to end game menu
 			if(e.getKeyCode() == KeyEvent.VK_PAGE_DOWN){
+				TitleState.isTraining = false;
+				TitleState.isEndGame = true;
+				EndGameState.training1 = true;
+				EndGameState.arcade1 = false;
+				EndGameState.localM1 = false;
+				Board.stateChange();
 				// Go to end menu state
 			}
 			
@@ -515,12 +597,22 @@ public class KeyboardInput {
 			}
 			// Go to escape menu
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+				Board.sounds.get("tap").play();
 				TitleState.isArcade = false;
 				TitleState.isGameMenu = true;
+				TitleState.prevState = 5;
 				Board.stateChange();
 			}
 			// Skip the game and go to end game menu
 			if(e.getKeyCode() == KeyEvent.VK_PAGE_DOWN){
+				LeaderBoard.readLBFile();
+				TitleState.isArcade = false;
+				TitleState.isEndGame = true;
+				EndGameState.arcade1 = true;
+				EndGameState.training1 = false;
+				EndGameState.localM1 = false;
+				 //load old high scores
+				Board.stateChange();
 				// Go to end menu state
 			}
 		}
@@ -536,29 +628,84 @@ public class KeyboardInput {
 			}
 			// Go to escape menu
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+				Board.sounds.get("tap").play();
 				TitleState.isLocalMP = false;
 				TitleState.isGameMenu = true;
+				TitleState.prevState = 6;
 				Board.stateChange();
 			}
 			// Skip the game and go to end game menu
 			if(e.getKeyCode() == KeyEvent.VK_PAGE_DOWN){
+				TitleState.isLocalMP = false;
+				TitleState.isEndGame = true;
+				EndGameState.arcade1 = false;
+				EndGameState.training1 = false;
+				EndGameState.localM1 = true;
+				Board.stateChange();
 				// Go to end menu state
 			}
 		}		
 
 		// ####################################################################################
-		// Escape menu controls - PLZ FIX, ADD A OPTIONS AND MAIN MENU BUTTON
+		// Game menu controls - PLZ FIX, ADD A OPTIONS AND MAIN MENU BUTTON
 		// #################################################################################### 
-		else if(TitleState.isGameMenu){
-			// If you click on the game menu button, go to game menu
-			if(e.getKeyCode() == KeyEvent.VK_P){
-				TitleState.isGameMenu = false;
-				TitleState.isMenu = true;
-				GameState.reset();
-				Board.stateChange();
+		else if(TitleState.isGameMenu){				
+			// Highlight each option as you naviagte 
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				if (GameMenuState.MMHighlighted == true){
+					GameMenuState.OPHighlighted = true;
+					GameMenuState.MMHighlighted = false;
+				} else if (GameMenuState.OPHighlighted == true){
+					GameMenuState.MMHighlighted = true;
+					GameMenuState.OPHighlighted = false;
+				}	
 			}	
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				if (GameMenuState.MMHighlighted == true){
+					GameMenuState.OPHighlighted = true;
+					GameMenuState.MMHighlighted = false;
+				} else if (GameMenuState.OPHighlighted == true){
+					GameMenuState.MMHighlighted = true;
+					GameMenuState.OPHighlighted = false;
+				}
+			}
+			// change to highlighted options state
+			if(e.getKeyCode() == KeyEvent.VK_ENTER){
+				Board.sounds.get("bash").play();
+				if (GameMenuState.MMHighlighted == true){
+					TitleState.isGameMenu = false;
+					TitleState.isMenu = true;
+					GameState.reset();
+					Board.stateChange();
+				}
+				if (GameMenuState.OPHighlighted == true){
+					if(TitleState.prevState == 4){
+						TitleState.isGameMenu = false;
+						TitleState.isSPOption = true;
+						TitleState.prevState = 8;
+						TitleState.prevState2 = 4;
+						Board.stateChange();
+					}
+					if(TitleState.prevState == 5){
+						TitleState.isGameMenu = false;
+						TitleState.isSPOption = true;
+						TitleState.prevState = 8;
+						TitleState.prevState2 = 5;
+						Board.stateChange();
+					}
+					if(TitleState.prevState == 6){
+						TitleState.isGameMenu = false;
+						TitleState.isMPOption = true;
+						TitleState.prevState = 8;
+						TitleState.prevState2 = 6;
+						Board.stateChange();
+					}
+				}
+			}
+			
 			// If you press escape again, you go back to your game
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+				Board.sounds.get("tap").play();
 				if(TitleState.prevState == 4){
 					TitleState.isTraining = true;
 					TitleState.isGameMenu = false;
@@ -580,72 +727,181 @@ public class KeyboardInput {
 		// End game menu controls - TO DO - have a restart button, display scores and winner 
 		// #################################################################################### 
 		
-		// Call GameState.reset() when you restart the game or go back to main menu
+		else if(TitleState.isEndGame){
+			// Highlight each option as you naviagte 
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				if (EndGameState.MMHighlighted == true){
+					EndGameState.RSHighlighted = true;
+					EndGameState.MMHighlighted = false;
+				} else if (EndGameState.RSHighlighted == true){
+					EndGameState.MMHighlighted = true;
+					EndGameState.RSHighlighted = false;
+				}	
+			}	
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				if (EndGameState.MMHighlighted == true){
+					EndGameState.RSHighlighted = true;
+					EndGameState.MMHighlighted = false;
+				} else if (EndGameState.RSHighlighted == true){
+					EndGameState.MMHighlighted = true;
+					EndGameState.RSHighlighted = false;
+				}
+			}
+			if(e.getKeyCode() == KeyEvent.VK_ENTER){
+				if (EndGameState.MMHighlighted == true){
+					TitleState.isEndGame = false;
+					TitleState.isMenu = true;
+					GameState.reset();
+					Board.stateChange();
+				}
+				if (EndGameState.RSHighlighted == true){
+					if(EndGameState.training1 == true){
+						TitleState.isEndGame = false;
+						TitleState.isTraining = true;
+						GameState.reset();
+						GameState.setMode();
+						this.loadTanks();
+						Board.stateChange();
+					}
+					if(EndGameState.arcade1 == true){
+						TitleState.isEndGame = false;
+						TitleState.isArcade = true;
+						GameState.reset();
+						GameState.setMode();
+						this.loadTanks();
+						Board.stateChange();
+					}
+					if(EndGameState.localM1 == true){
+						TitleState.isEndGame = false;
+						TitleState.isLocalMP = true;
+						GameState.reset();
+						GameState.setMode();
+						this.loadTanks();
+						Board.stateChange();
+					}
+				}
+			}
+			if(e.getKeyCode() == KeyEvent.VK_L){
+				TitleState.isEndGame = false;
+				TitleState.isLB = true;
+				LeaderBoard.readLBFile();
+				TitleState.prevState = 9;
+				Board.stateChange();
+			}
+		}
+		//#########################################################################
+		//LEADER BOARD STATE
+		//#########################################################################
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+			Board.sounds.get("tap").play();
+			if(TitleState.isLB == true){
+				if(TitleState.prevState == 9){
+					TitleState.isLB = false;
+					TitleState.isEndGame = true;
+					Board.stateChange();
+				} else {
+					TitleState.isLB = false;
+					TitleState.isSP = true;
+					Board.stateChange();
+				}
+			}
+		}		
 	}		
 	
-	// Key release events for tank controls and tank select
+		
+/*
+ * Purpose of this function is to check for key releases
+ */
 	public void keyRelease(KeyEvent e) {
 		// Player 1 controls for single player
 		if (TitleState.isTraining == true || TitleState.isArcade == true) {
 			if (SPOptionState.control1 == true) {
 				if (e.getKeyCode() == KeyEvent.VK_W) {
 					player1.setVelocityForward(0);
+					logW = false;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_S) {
 					player1.setVelocityBackward(0);
+					logS = false;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_A) {
 					player1.setA(player1.getA() - 0);
+					logA = false;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_D) {
 					player1.setA(player1.getA() + 0);
+					logD = false;
+				}
+				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+					logSpace = false;
 				}
 			} else if (SPOptionState.control2 == true) {
 				if (e.getKeyCode() == KeyEvent.VK_UP) {
 					player1.setVelocityForward(0);
+					logUp = false;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 					player1.setVelocityBackward(0);
+					logDown = false;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 					player1.setA(player1.getA() - 0);
+					logLeft = false;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					player1.setA(player1.getA() + 0);
+					logRight = false;
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					logEnter = false;
 				}
 			}
 		}	
-			
+		
 		// Player 1 and player 2 controls for local multiplayer
 		if (TitleState.isLocalMP == true) {
 			// Player 1
 			if (e.getKeyCode() == KeyEvent.VK_W) {
 				player1.setVelocityForward(0);
+				logW = false;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_S) {
 				player1.setVelocityBackward(0);
+				logS = false;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_A) {
 				player1.setA(player1.getA() - 0);
+				logA = false;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_D) {
 				player1.setA(player1.getA() + 0);
+				logD = false;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				logSpace = false;
 			}
 			// Player 2
 			if (e.getKeyCode() == KeyEvent.VK_UP) {
 				player2.setVelocityForward(0);
+				logUp = false;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 				player2.setVelocityBackward(0);
+				logDown = false;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 				player2.setA(player2.getA() - 0);
+				logLeft = false;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 				player2.setA(player2.getA() + 0);
+				logRight = false;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				logEnter = false;
 			}
 		}
-		
+	
 		// Key Release for multiplayer option state
 		if(TitleState.isMPOption == true){
 			if(e.getKeyCode() == KeyEvent.VK_UP){

@@ -3,6 +3,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+
+import com.tanks.resources.LoadSprites;
+
 import java.awt.Color;
 
 
@@ -18,25 +21,33 @@ public class TitleState extends State{
 	public static boolean isTraining = false;
 	public static boolean isArcade = false;
 	public static boolean isLocalMP = false;
-	public static boolean returnPState = false;
+	public static boolean isEndGame = false;
+	public static boolean isLB = false;
+
 	
 	public static int prevState = 0; //1 Title Menu, 2 SP Menu, 3 MP Menu, 
-									//4 Training Mode, 5 Arcade Mode, 6 LocalM Mode, 7 OptionState
+									//4 Training Mode, 5 Arcade Mode, 6 LocalM Mode, 
+									//7 OptionState, 8 Game Menu, 9 EndGameState
+	public static int prevState2 = 0; //for when entering option menu through game menu
 	
 	
 	public static boolean SPHighlighted = true;
 	public static boolean MPHighlighted = false;
 	public static boolean OPHighlighted = false;
+
+	private LoadSprites image;
 	
-	
-	
+
 	@Override
 	public void doDrawing(Graphics g) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			
-			g2d.setColor(Color.pink);
+			image = new LoadSprites();
+			g2d.setColor(Color.gray);
 			g2d.fillRect(0,0,1024,768);
+			g2d.drawImage(image.getSprite(18),0,0, null);
+			g2d.drawImage(image.getSprite(17),-40,-40, null);
 			g2d.setColor(Color.black);	
 			g2d.fillRect(252,90,520,120);
 			g2d.setColor(Color.white);	

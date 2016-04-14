@@ -8,24 +8,35 @@ import com.tanks.objects.Bullet;
 import com.tanks.objects.GameObject;
 import com.tanks.objects.ObjectInteraction;
 import com.tanks.objects.Tank;
-import com.tanks.resources.LoadSprites;
+import com.tanks.states.GameState;
 
-public abstract class GameMode {
-	public static final int tankSize = 48;
-	public static final double tankSpeed = 3;
-	
+public abstract class GameMode {	
 	protected static Tank player1;
     protected static ArrayList<Bullet> p1Bullets;
     protected Bullet bullet;
-    protected LoadSprites image;
     
 	protected ObjectInteraction mechanics;
     
 	public GameMode() {
-		player1 = new Tank(0,0,tankSpeed,tankSize,tankSize,game.P1);
-		mechanics = new ObjectInteraction();
+		player1 = new Tank(0,0,GameState.tankSpeed,GameState.tankSize,GameState.tankSize,GameState.tankRof,game.P1);
 		p1Bullets = player1.getBullets();
-		image = new LoadSprites();
+	}
+	
+	public void setMechanics(ObjectInteraction mech) {
+		mechanics = mech;
+	}
+	
+	public void setArcadeSpecs() {
+		player1.setFireLock(true);
+		player1.setSpeed(5);
+		player1.setRof(500);
+	}
+	
+	public void setDefault() {
+		player1.setFireLock(true);
+		if (GameState.getMode().getPlayer2() != null) {GameState.getMode().getPlayer2().setFireLock(true);}
+		player1.setSpeed(GameState.tankSpeed);
+		player1.setRof(2000);
 	}
 	
 	public abstract void doDrawing(Graphics g);
@@ -36,3 +47,7 @@ public abstract class GameMode {
 	public abstract Tank getPlayer2();
 	public abstract void spawnPowerup(ArrayList<GameObject> walls);
 }
+
+
+
+

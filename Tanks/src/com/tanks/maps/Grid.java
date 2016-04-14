@@ -4,8 +4,8 @@ public class Grid {
 	
 	private boolean gridArray[][];
 	
-	protected final int rows = 64;
-	protected final int cols = 85;
+	protected final int rows = 65;
+	protected final int cols = 86;
 	
 	public Grid() {
 		gridArray = new boolean[rows][cols];

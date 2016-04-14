@@ -1,3 +1,7 @@
+/**
+ * This class handles the lifetime of each bullet object
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.reminders;
 
 import java.util.Timer;

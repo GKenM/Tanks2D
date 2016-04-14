@@ -1,6 +1,7 @@
 package com.tanks.modes;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
@@ -8,12 +9,14 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.tanks.main.Board;
 import com.tanks.main.game;
 import com.tanks.objects.Bullet;
 import com.tanks.objects.GameObject;
 import com.tanks.objects.PowerUp;
 import com.tanks.objects.Tank;
 import com.tanks.reminders.PowerUpDestroyer;
+import com.tanks.states.GameState;
 
 public class TrainingMode extends GameMode {
 	private Tank bot;
@@ -22,7 +25,7 @@ public class TrainingMode extends GameMode {
     private PowerUp powerUp;
     
     public TrainingMode() {
-		bot = new Tank(0,0,tankSpeed,tankSize,tankSize, game.BOT);
+		bot = new Tank(0,0,GameState.tankSpeed,GameState.tankSize,GameState.tankSize,GameState.tankRof,game.BOT);
 		botBullets = bot.getBullets();
 		powerUps = new ArrayList<PowerUp>();
 		reset();
@@ -34,34 +37,47 @@ public class TrainingMode extends GameMode {
 		// Player Tank
 		AffineTransform oldTransform = g2d.getTransform();
 		g2d.setTransform(AffineTransform.getRotateInstance(Math.toRadians(player1.getA()), player1.getX(), player1.getY()));
-	    if (player1.getVis()){g2d.drawImage(image.getSprite(0), (int) player1.getX() -24 , (int) player1.getY() -24, null);}
+	    if (player1.getVis()){g2d.drawImage(Board.images.getSprite(0), (int) player1.getX() -24 , (int) player1.getY() -24, null);}
 	    g2d.setTransform(oldTransform);
 	    
 	    // Bot Tank
 		g2d.setTransform(AffineTransform.getRotateInstance(Math.toRadians(bot.getA()), bot.getX(), bot.getY()));
-	    if (bot.getVis()){g2d.drawImage(image.getSprite(1), (int) bot.getX() -24 , (int) bot.getY() -24, null);}
+	    if (bot.getVis()){g2d.drawImage(Board.images.getSprite(1), (int) bot.getX() -24 , (int) bot.getY() -24, null);}
 	    g2d.setTransform(oldTransform);
 	    
 	    // Missiles
 	    for (int i = 0; i < p1Bullets.size(); i++) {
 	    	bullet = p1Bullets.get(i);
 	    	
-	    	g2d.drawImage(image.getSprite(4) , (int) bullet.getX() - 4 , (int) bullet.getY() -4, null);
+	    	g2d.drawImage(Board.images.getSprite(4) , (int) bullet.getX() - 4 , (int) bullet.getY() -4, null);
 	    	
+	    }
+	    
+	    g2d.setColor(Color.white); 
+		Font font = new Font("Serif", Font.PLAIN, 20);
+		g2d.setFont(font);
+	    
+	    // Player Scores
+	    g2d.drawString("Player1: " + player1.getScore(), 10, 25);
+	    
+	    // Player 1 power up indicator
+	    if (player1.getPU() == 1) {
+	    	g2d.drawImage(Board.images.getSprite(11), 10, 40, null);
+	    } else if (player1.getPU() == 2) {
+	    	g2d.drawImage(Board.images.getSprite(15), 10, 40, null);
+	    } else if (player1.getPU() == 3) {
+	    	g2d.drawImage(Board.images.getSprite(14), 10, 40, null);
+	    } else if (player1.getPU() == 4) {
+	    	g2d.drawImage(Board.images.getSprite(13), 10, 40, null);
+	    } else if (player1.getPU() == 5) {
+	    	g2d.drawImage(Board.images.getSprite(12), 10, 40, null);
 	    }
  	    
 	    // Power Ups
-	    g2d.setColor(Color.white);
 	    for (int i = 0; i < powerUps.size(); i++) {
 	    	powerUp = powerUps.get(i);
-	    	
-	    	g2d.fill(powerUp.getBounds());
+	    	g2d.drawImage(Board.images.getSprite(16), (int) powerUp.getX()-12, (int) powerUp.getY()-12, null);
 	    }
-	    
-	    // Power Up id
-	    g2d.setColor(Color.white); 
-	    g2d.drawString("PowerUP: " + player1.getPU(), 100, 100);
-		
 	}
 
 	@Override
@@ -107,9 +123,11 @@ public class TrainingMode extends GameMode {
 	
 	public void reset() {
 		this.respawn();
-		
+
 		// Reset player scores
 		player1.setScore(0);
+		player1.setKills(0);
+		player1.setDeaths(0);
 		
 		// Reset PowerUps
 		player1.setPU(0);
@@ -137,7 +155,7 @@ public class TrainingMode extends GameMode {
 		
 		for (int i = 0; i < num; i++) {
 			powerUp = new PowerUp(0,0,0,24,24,game.POWERUP);
-			powerUp.setPosition(player1, bot, walls);
+			powerUp.setPosition(player1, bot, walls, powerUps);
 			
 			int puID = rand.nextInt(5) + 1;
 			powerUp.setPuID(puID);
