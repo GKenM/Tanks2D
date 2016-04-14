@@ -27,7 +27,7 @@ public class EffectTimer {
 	public void tick() {
 		if (start) {
 			// When the time is reach, reset the effect, and stop the counter till another powerup is picked up
-			if (tick == 30*10) {
+			if (tick == 30*15) {
 				Board.sounds.get("powdown").play();
 				tank.resetEffect();
 				tank.setPU(0);
@@ -74,7 +74,7 @@ public class EffectTimer {
 	
 	public void setStart(boolean temp) {
 		start = temp;
-		count = 10;
+		count = 15;
 	}
 	
 	public void resetTick() {

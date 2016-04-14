@@ -1,3 +1,7 @@
+/**
+ *	This state draws out the Single Player Option State
+ *  Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.states;
 
 import java.awt.Color;
@@ -8,11 +12,11 @@ import java.awt.RenderingHints;
 
 public class SPOptionState extends State {
 
+	// dictates what control setup is used
 	public static boolean control1 = true;
 	public static boolean control2 = false;
 	
-	
-	
+	//draw out boxes and keys in control layout
 	@Override
 	public void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
@@ -37,13 +41,15 @@ public class SPOptionState extends State {
 		g2d.fillRect(703,160,80,80);
 		g2d.fillRect(803,160,80,80);
 		g2d.fillRect(862,280,40,40);
-		g2d.fillRect(312,350,400,100);
+		g2d.fillRect(62,350,400,100);
+		g2d.fillRect(662,350,220,100);
 		Font font1 = new Font("Serif", Font.PLAIN, 36);
 		g2d.setFont(font1);
 		g2d.drawString("CONTROLS 1", 80, 320);
 		g2d.drawString("CONTROLS 2", 582, 320);
 		g2d.setColor(Color.gray);
-		g2d.fillRect(332,360,360,80);
+		g2d.fillRect(82,360,360,80);
+		g2d.fillRect(682,360,180,80);
 		g2d.fillRect(191,63,60,72);
 		g2d.fillRect(111,164,60,72);
 		g2d.fillRect(211,164,60,72);
@@ -52,7 +58,6 @@ public class SPOptionState extends State {
 		g2d.fillRect(613,164,60,72);
 		g2d.fillRect(713,164,60,72);
 		g2d.fillRect(813,164,60,72);
-		g2d.fillRect(332,360,360,80);
 		g2d.setColor(Color.black);
 		g2d.fillRect(360,280,40,40);
 		g2d.fillRect(860,280,40,40);
@@ -78,16 +83,18 @@ public class SPOptionState extends State {
 		g2d.drawString("Forward", 80, 110);
 		g2d.drawString("Forward", 580, 110);
 		
-		g2d.setColor(Color.gray);
-		g2d.fillRect(332,360,360,80);
-		
+		//draw space and enter buttons
 		g2d.setColor(Color.black);
 		Font font3 = new Font("Serif", Font.PLAIN, 40);
 		g2d.setFont(font3);
-		g2d.drawString("SPACE ",360, 410);
+		g2d.drawString("SPACE ",190, 400);
+		g2d.drawString("ENTER ",690, 400);
 		g2d.setColor(Color.blue);
-		g2d.drawString("- Shoot",520, 410);
+		g2d.setFont(font2);
+		g2d.drawString("Shoot",230, 430);
+		g2d.drawString("Shoot",740, 430);
 		
+		//draw escape buttong
 		g2d.setColor(Color.black);	
 		g2d.fillRect(20,620,80,80);
 		g2d.setColor(Color.white);	
@@ -98,31 +105,26 @@ public class SPOptionState extends State {
 		g2d.drawString("ESC", 35, 655);
 		g2d.setFont(font);
 		g2d.drawString("↩", 40, 690);
-
 		
+		//check box control1
 		if( control1 == true){
 			g2d.setColor(Color.white);
 			g2d.fillRect(370,290,20,20);
 			g2d.fillRect(872,290,20,20);
 			g2d.setColor(Color.black);	
 			g2d.fillRect(375,295,10,10);
-		}	
-		else {
+		//check box control2	
+		}	else {
 			g2d.setColor(Color.white);
 			g2d.fillRect(370,290,20,20);
 			g2d.fillRect(872,290,20,20);
 			g2d.setColor(Color.black);	
 			g2d.fillRect(877,295,10,10);
-		}				
-		
-
-			
+		}						
 	}
 
 	@Override
 	public void tick() {
 		// TODO Auto-generated method stub
-		
 	}
-
 }

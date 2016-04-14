@@ -1,3 +1,7 @@
+/**
+ * This class handles the local multiplayer game mode
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.modes;
 
 import java.awt.Color;
@@ -34,13 +38,13 @@ public class LocalMP extends GameMode{
 		powerUps = new ArrayList<PowerUp>();
 		reset();
 	}
-	
+	/*
+	 * Purpose of this function is to handle all the graphics in local multiplayer game mode
+	 */
 	public void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;	
 		
-
-
-		//tank colour select
+		// player 1 and player 2 colour select
 		for(int i =0; i < 4; i++){
 			if( MPOptionState.p1tanks[i] == true){
 				p1TankColour = i;
@@ -52,9 +56,7 @@ public class LocalMP extends GameMode{
 			}
 		}
 
-
-
-		// Player Tank
+		// Player 1 Tank
 		AffineTransform oldTransform = g2d.getTransform();
 		g2d.setTransform(AffineTransform.getRotateInstance(Math.toRadians(player1.getA()), player1.getX(), player1.getY()));
 		if (player1.getVis()){g2d.drawImage(Board.images.getSprite(p1TankColour), (int) player1.getX() -24 , (int) player1.getY() -24, null);}
@@ -65,12 +67,14 @@ public class LocalMP extends GameMode{
 		if (player2.getVis()){g2d.drawImage(Board.images.getSprite(p2TankColour), (int) player2.getX() -24 , (int) player2.getY() -24, null);}
 		g2d.setTransform(oldTransform);
 	    
-	    // Missiles
+	    // Player 1 bullets
 	    for (int i = 0; i < p1Bullets.size(); i++) {
 	    	bullet = p1Bullets.get(i);
 	    	
 	    	g2d.drawImage(Board.images.getSprite(4) ,(int) bullet.getX()-4 , (int) bullet.getY()-4, null);
 	    }
+	    
+	    // Player 2 bullets
 	    for (int i = 0; i < p2Bullets.size(); i++) {
 	    	bullet = p2Bullets.get(i);
 
@@ -78,6 +82,7 @@ public class LocalMP extends GameMode{
 	    	
 	    }     	  
 
+	    // Set the font for in game HUD
 	    g2d.setColor(Color.white); 
 		Font font = new Font("Serif", Font.PLAIN, 20);
 		g2d.setFont(font);
@@ -118,19 +123,23 @@ public class LocalMP extends GameMode{
 	    	g2d.drawImage(Board.images.getSprite(16), (int) powerUp.getX()-12, (int) powerUp.getY()-12, null);
 	    }
 	}
-	
+	/*
+	 * Purpose of this function is to handle all the game mechanics of local multiplayer game mode
+	 */
 	public void tick() {
-		// Object Interactions
+		// Rotate player 1 hitbox
 		Shape p1Bounds = player1.getBounds();
 		AffineTransform af = new AffineTransform();
 		af.rotate(player1.getA() * Math.PI/180, player1.getX(), player1.getY());
 		p1Bounds = af.createTransformedShape(p1Bounds);
 		
+		// Rotate player 2 hitbox
 		Shape p2Bounds = player2.getBounds();
 		AffineTransform bf = new AffineTransform();
 		bf.rotate(player2.getA() * Math.PI/180, player2.getX(), player2.getY());
 		p2Bounds = bf.createTransformedShape(p2Bounds);	
 		
+		// All object interactions between the two players and game environment
 		mechanics.p1VsWalls(player1);
 		mechanics.p1VsWalls(player2);
 		mechanics.bulletVsWalls(p1Bullets);
@@ -167,7 +176,9 @@ public class LocalMP extends GameMode{
 			}
 		}
 	}
-	
+	/*
+	 * Purpose of this function is to handle respawning of the two players
+	 */
 	public void respawn() {
 		// Remove bullets
 		if (p1Bullets.size() != 0) {p1Bullets.clear();}
@@ -210,16 +221,21 @@ public class LocalMP extends GameMode{
 	public Tank getPlayer2() {
 		return player2;
 	}
-
+	/*
+	 * Purpose of this function is to spawn powerups in local multiplayer mode
+	 */
 	@Override
 	public void spawnPowerup(ArrayList<GameObject> walls) {
+		// Randomly generate the number of powerups to spawn
 		Random rand = new Random();
 		int num = rand.nextInt(3) + 1;
 		
+		// Loop through the number of powerups
 		for (int i = 0; i < num; i++) {
 			powerUp = new PowerUp(0,0,0,24,24,game.POWERUP);
 			powerUp.setPosition(player1, player2, walls, powerUps);
 			
+			// Randomly generate the type of powerup
 			int puID = rand.nextInt(5) + 1;
 			powerUp.setPuID(puID);
 			

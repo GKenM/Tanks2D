@@ -1,3 +1,7 @@
+/**
+ * This class handles all the game modes basic game mechanics
+ * Authors: Jakob Ettles, Ken Malavisuriya 
+ */
 package com.tanks.states;
 
 import java.awt.Color;
@@ -47,12 +51,13 @@ public class GameState extends State{
 		powerTimer = new PowerUpSpawner(walls.getWalls());
 		player1Effect = new EffectTimer();
 		player2Effect = new EffectTimer();
-		
 		mechanics = new ObjectInteraction(walls);
 		
 		gameMode = training;
 	}
-	
+	/*
+	 * Purpose of this function is to change game modes and pass in the ranomdly generated map to necessary functions
+	 */
 	public static void setMode() {
 		walls = new Walls();
 		powerTimer = new PowerUpSpawner(walls.getWalls());
@@ -77,7 +82,9 @@ public class GameState extends State{
 			gameMode.setDefault();
 		}
 	}
-	
+	/*
+	 * Purpose of this function is draw the map and display the game timers and effect timers
+	 */
 	@Override
 	public void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;	
@@ -98,7 +105,9 @@ public class GameState extends State{
 		player2Effect.doDrawing(g);
 	    
 	}
-
+	/*
+	 * Purpose of this function is to update all the tick based functions 
+	 */
 	@Override
 	public void tick() {		
 		gameTimer.tick();
@@ -106,14 +115,16 @@ public class GameState extends State{
 		player1Effect.tick();
 		player2Effect.tick();
 		
+		// When the 3 second countdown is over, run the update method for game mode
 		if (gameTimer.getSecs() < 120) {
 			gameMode.tick();
-			log.writeFile(); // LOG FILE
+			log.writeFile();
 		}
 	}
-	
+	/*
+	 * Purpose of this function is to reset all the timers and game modes
+	 */
 	public static void reset() {
-		// reset the tick timer
 		gameTimer = new GameTimer(120);
 		powerTimer = new PowerUpSpawner(walls.getWalls());
 		player1Effect = new EffectTimer();

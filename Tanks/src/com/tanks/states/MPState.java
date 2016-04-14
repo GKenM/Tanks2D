@@ -1,3 +1,7 @@
+/**
+ *	This state draws out the MULTIPLAYER MENU
+ *  Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.states;
 
 import java.awt.Color;
@@ -8,6 +12,7 @@ import java.awt.RenderingHints;
 
 public class MPState extends State{
 
+	//Boolean values dictate what option is highlighted
 	public static boolean LMHighlighted = true;
 	public static boolean OPHighlighted = false;
 	
@@ -16,6 +21,7 @@ public class MPState extends State{
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			
+			//draw menu boxes
 			g2d.setColor(Color.pink);
 			g2d.fillRect(0,0,1024,768);
 			g2d.setColor(Color.black);	
@@ -38,8 +44,7 @@ public class MPState extends State{
 			g2d.drawString("MULTIPLAYER", 350, 340);
 			g2d.drawString("OPTIONS", 400, 460);
 			
-			
-
+			// draw escape box
 			g2d.setColor(Color.black);	
 			g2d.fillRect(20,620,80,80);
 			g2d.setColor(Color.white);	
@@ -51,8 +56,8 @@ public class MPState extends State{
 			g2d.setFont(font);
 			g2d.drawString("↩", 40, 690);
 
+			//highlight Local Multiplayer box
 			if(LMHighlighted == true){
-
 				g2d.setColor(Color.white);
 				g2d.fillRect(302,240,420,120);
 				g2d.setColor(Color.black);
@@ -62,8 +67,8 @@ public class MPState extends State{
 				g2d.drawString("LOCAL ", 420, 290);
 				g2d.drawString("MULTIPLAYER", 350, 340);
 			}
+			//highlight Option box
 			if(OPHighlighted == true){
-
 				g2d.setColor(Color.white);
 				g2d.fillRect(302,390,420,120);
 				g2d.setColor(Color.black);
@@ -72,14 +77,10 @@ public class MPState extends State{
 				g2d.setFont(font2);
 				g2d.drawString("OPTIONS", 400, 460);
 			}
-
 	}
 
 	@Override
 	public void tick() {
 		// TODO Auto-generated method stub
-		
 	}
-
-
 }

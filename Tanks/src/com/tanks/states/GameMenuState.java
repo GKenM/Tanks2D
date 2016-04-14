@@ -1,3 +1,7 @@
+/**
+ *	This state draws out the IN GAME MENU STATE
+ *  Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.states;
 
 import java.awt.Color;
@@ -8,6 +12,7 @@ import java.awt.RenderingHints;
 
 public class GameMenuState extends State{
 	
+	//Boolean values dictate what option is highlighted
 	public static boolean MMHighlighted = true;
 	public static boolean OPHighlighted = false;
 	
@@ -16,6 +21,7 @@ public class GameMenuState extends State{
 	public void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		//draws out Menu Names and boxes
 		g2d.setColor(Color.gray);
 		g2d.fillRect(0,0,1024,768);
 		g2d.setColor(Color.black);	
@@ -37,9 +43,7 @@ public class GameMenuState extends State{
 		g2d.drawString("MAIN MENU", 370, 310);
 		g2d.drawString("OPTIONS", 410, 470);
 
-		
-		
-
+		// draws out escape button
 		g2d.setColor(Color.black);	
 		g2d.fillRect(20,620,80,80);
 		g2d.setColor(Color.white);	
@@ -51,8 +55,8 @@ public class GameMenuState extends State{
 		g2d.setFont(font);
 		g2d.drawString("↩", 40, 690);
 
+		// highlights mainmenu box
 		if(MMHighlighted == true){
-
 			g2d.setColor(Color.white);
 			g2d.fillRect(302,240,420,120);
 			g2d.setColor(Color.black);
@@ -62,8 +66,8 @@ public class GameMenuState extends State{
 			g2d.drawString("MAIN MENU", 370, 310);
 
 		}
+		// highlights option menus box
 		if(OPHighlighted == true){
-
 			g2d.setColor(Color.white);
 			g2d.fillRect(302,390,420,120);
 			g2d.setColor(Color.black);
@@ -73,12 +77,8 @@ public class GameMenuState extends State{
 			g2d.drawString("OPTIONS", 410, 470);
 		}
 	}
-	
-
 	@Override
 	public void tick() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
-
 }

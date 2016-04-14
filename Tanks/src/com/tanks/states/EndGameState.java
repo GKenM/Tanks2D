@@ -1,3 +1,7 @@
+/**
+ *	This state draws out the ENDGAME STATE
+ *  Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.states;
 
 import java.awt.Color;
@@ -9,12 +13,12 @@ import java.awt.RenderingHints;
 import com.tanks.modes.LocalMP;
 import com.tanks.resources.LoadSprites;
 
-
 public class EndGameState extends State{
 		
 	private LoadSprites image;
 	private boolean drawing1;
-
+	
+	//Boolean values dictate what option is highlighted and which game mode was played
 	public static boolean training1 = false;
 	public static boolean arcade1 = true;
 	public static boolean localM1 = false;
@@ -29,27 +33,24 @@ public class EndGameState extends State{
 	private int p2Deaths = 0;
 	private double p2KD = 0.00;
 
-
-	
 	@Override
 	public void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-		image = new LoadSprites();
-		g2d.setColor(Color.green);
-		g2d.fillRect(60,60,904,666);
-		g2d.setColor(Color.black);
-		g2d.fillRect(80,80,864,626);
 		
-
+		//set fonts
 		Font font = new Font("Serif", Font.PLAIN, 50);
 		Font font2 = new Font("Serif", Font.PLAIN, 40);
 		Font font3 = new Font("Serif", Font.PLAIN, 60);
 		Font font4 = new Font("Serif", Font.PLAIN, 16);
 		Font font5 = new Font("Serif", Font.PLAIN, 24);
 		Font font6 = new Font("Serif", Font.PLAIN, 14);
-		
+		//draw default boxes and frames for all modes
+		image = new LoadSprites();
+		g2d.setColor(Color.green);
+		g2d.fillRect(60,60,904,666);
+		g2d.setColor(Color.black);
+		g2d.fillRect(80,80,864,626);
 		g2d.setFont(font2);
 		g2d.setColor(Color.green);
 		g2d.fillRect(302,420,420,120);
@@ -62,7 +63,7 @@ public class EndGameState extends State{
 		g2d.drawString("MAIN MENU", 380, 640);
 		
 		
-		
+		// add text and images for Training mode end state
 		if(training1 == true){
 			g2d.setFont(font3);
 			g2d.drawString("TRAINING OVER",250,180);
@@ -73,23 +74,25 @@ public class EndGameState extends State{
 			g2d.drawString("out ARCADE MODE now!\"", 380, 290);
 		}
 		
+		//add text and images for arcade mode
 		if(arcade1 == true){
 			g2d.setFont(font3);
 			g2d.drawString("TIMES UP!",320,160);
 			g2d.fillRect(300,170,385,5);
 			g2d.drawImage(image.getSprite(19),600,210, null);
 			g2d.setFont(font4);
-			if(p1score < 10){
+			// tank displays certain message depending on score
+			if(p1score < 40){
 				g2d.drawString("\"Come on mate, that was ", 630, 250);
 				g2d.drawString("bloody dreadful, next time", 630, 270);
 				g2d.drawString("kill something, Godammit!!\"", 630, 290);
 			}
-			if((p1score > 9) && (p1score < 20)){
+			if((p1score > 39) && (p1score < 100)){
 				g2d.drawString("\"Not a bad effort, but", 630, 250);
 				g2d.drawString("I'm sure you can do a lot ", 630, 270);
 				g2d.drawString("better, try again!!\"", 630, 290);
 			}
-			if(p1score > 19){
+			if(p1score > 99){
 				g2d.drawString("\"Hey that was some DANK ", 630, 250);
 				g2d.drawString("performance, now lets see", 630, 270);
 				g2d.drawString("you beat that high score!\" ", 630, 290);
@@ -105,8 +108,8 @@ public class EndGameState extends State{
 			g2d.fillRect(130,345,140,5);
 			g2d.setFont(font4);
 			
+			//draw p1 stats
 			g2d.drawString("KILLS - ",140,285);
-			//TODO get p1Kills value
 			p1Kills = GameState.getMode().getPlayer1().getKills();
 			g2d.drawString(p1Kills + "",210,285);
 						
@@ -128,7 +131,7 @@ public class EndGameState extends State{
 			p1score = GameState.getMode().getPlayer1().getScore();
 			g2d.drawString((p1score + ""),280,375);
 			
-			// draw high scores and leaderboard button + info
+			// draw high scores and leaderboard  + info
 			g2d.setColor(Color.green);
 			g2d.fillRect(100,420,190,270);
 			g2d.fillRect(735,420,190,270);
@@ -136,7 +139,6 @@ public class EndGameState extends State{
 			g2d.fillRect(110,430,170,250);
 			g2d.fillRect(745,430,170,250);
 			g2d.setColor(Color.green);
-			
 			g2d.setFont(font2);
 			g2d.drawString("Press" ,140,480);
 			g2d.drawString("\"L\"" ,165,520);
@@ -147,8 +149,6 @@ public class EndGameState extends State{
 			g2d.setFont(font4);
 			g2d.drawString("HIGH SCORES" ,770,460);
 			g2d.setFont(font6);
-			
-			
 			g2d.drawString("1" ,760,500);
 			g2d.drawString("2" ,760,530);
 			g2d.drawString("3" ,760,560);
@@ -175,7 +175,7 @@ public class EndGameState extends State{
 			
 			
 		}
-		
+		//draw multiplayer stats and results
 		if(localM1 == true){
 			g2d.setColor(Color.green);
 			g2d.fillRect(100,100,825,300);
@@ -195,6 +195,7 @@ public class EndGameState extends State{
 			g2d.fillRect(670,255,180,5);
 			g2d.setFont(font4);
 			
+			//draw p1 stats
 			g2d.drawString("KILLS - ",140,195);
 			p1Kills = GameState.getMode().getPlayer1().getKills();
 			g2d.drawString(p1Kills + "",210,195);
@@ -218,7 +219,7 @@ public class EndGameState extends State{
 			p1score = GameState.getMode().getPlayer1().getScore();
 			g2d.drawString((p1score + ""),280,280);
 			
-			//P2
+			//draw p2 stats
 			g2d.drawString("KILLS - ",680,195);
 			p2Kills = GameState.getMode().getPlayer2().getKills();
 			g2d.drawString(p2Kills + "",750,195);
@@ -236,11 +237,11 @@ public class EndGameState extends State{
 				p2KD = Math.round(p2KD*100)/100.0d;
 				g2d.drawString(p2KD + "",725,245);
 			}
-
 			g2d.drawString("TOTAL SCORE :",680,280);
 			p2score = GameState.getMode().getPlayer2().getScore();
 			g2d.drawString((p2score + ""),820,280);
 			
+			//draw flashing winner under the winning player
 			if(p1score > p2score){
 				g2d.setColor(Color.white);
 				g2d.setFont(font);
@@ -270,6 +271,7 @@ public class EndGameState extends State{
 			
 		}
 		
+		// highlight restart box
 		if(RSHighlighted == true){
 
 			g2d.setColor(Color.black);
@@ -280,6 +282,7 @@ public class EndGameState extends State{
 			g2d.setFont(font2);
 			g2d.drawString("RESTART", 400, 490);
 		}
+		// highlights main menu
 		if(MMHighlighted == true){
 
 			g2d.setColor(Color.black);

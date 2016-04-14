@@ -32,7 +32,9 @@ public class KeyboardInput {
 		this.player1 = null;
 		this.player2 = null;
 	}
-	
+	/*
+	 * Purpose of this function is to load the tanks, depending on the game mode, for tank controls
+	 */
 	public void loadTanks() {
 		if (TitleState.isTraining == true || TitleState.isArcade == true) {
 			this.player1 = GameState.getMode().getPlayer1();
@@ -41,9 +43,9 @@ public class KeyboardInput {
 			this.player2 = GameState.getMode().getPlayer2();
 		}
 	}
-	
-	
-	
+	/*
+	 * Purpose of this function is to check for key presses
+	 */
 	public void keyPress(KeyEvent e) {
 		// ####################################################################################
 		// Tank controls
@@ -267,8 +269,6 @@ public class KeyboardInput {
 					
 					GameState.setMode();
 					this.loadTanks();
-					// Change the mode in the gamestate to training ##############################################
-					// set the currentstate to gamestate
 				}
 				// go into arcade mode
 				if (SPState.AMHighlighted == true){
@@ -281,8 +281,6 @@ public class KeyboardInput {
 					
 					GameState.setMode();
 					this.loadTanks();
-					// change the mode in the gamestate to arcade #################################################
-					// set the currentstate to gamestate
 				}
 				// go into leaderboards
 				if (SPState.LBHighlighted == true){
@@ -290,7 +288,7 @@ public class KeyboardInput {
 					TitleState.isTraining = false;
 					TitleState.isArcade = false;
 					TitleState.isLB = true;
-					TitleState.prevState = 2; // necessary?
+					TitleState.prevState = 2; 
 					TitleState.isSP = false;
 					Board.stateChange();
 				}	
@@ -343,14 +341,12 @@ public class KeyboardInput {
 					
 					GameState.setMode();
 					this.loadTanks();
-					// change the mode in the gamestate to localMP #################################################
-					// set the currentstate to gamestate
 				}
 				// go into game options - REMOVE
 				if (MPState.OPHighlighted == true){
 					TitleState.isLocalMP = false;
 					TitleState.isMPOption = true;
-					TitleState.prevState = 3; // necessary??
+					TitleState.prevState = 3; 
 					TitleState.isMP = false;
 					Board.stateChange();
 				}
@@ -552,7 +548,7 @@ public class KeyboardInput {
 		}
 
 		// ####################################################################################
-		// In-game menu controls - TO DO
+		// In-game menu controls 
 		// #################################################################################### 
 		
 		// In training mode
@@ -611,9 +607,7 @@ public class KeyboardInput {
 				EndGameState.arcade1 = true;
 				EndGameState.training1 = false;
 				EndGameState.localM1 = false;
-				 //load old high scores
 				Board.stateChange();
-				// Go to end menu state
 			}
 		}
 		// In local multiplayer mode
@@ -642,12 +636,11 @@ public class KeyboardInput {
 				EndGameState.training1 = false;
 				EndGameState.localM1 = true;
 				Board.stateChange();
-				// Go to end menu state
 			}
 		}		
 
 		// ####################################################################################
-		// Game menu controls - PLZ FIX, ADD A OPTIONS AND MAIN MENU BUTTON
+		// Game menu controls 
 		// #################################################################################### 
 		else if(TitleState.isGameMenu){				
 			// Highlight each option as you naviagte 
@@ -724,7 +717,7 @@ public class KeyboardInput {
 			}
 		}
 		// ####################################################################################
-		// End game menu controls - TO DO - have a restart button, display scores and winner 
+		// End game menu controls
 		// #################################################################################### 
 		
 		else if(TitleState.isEndGame){

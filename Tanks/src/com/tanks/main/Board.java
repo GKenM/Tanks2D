@@ -1,3 +1,7 @@
+/**
+ * This is the game board class which displays the game and handles game loop and state changes
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.main;
 
 import java.awt.Color;
@@ -53,7 +57,7 @@ public class Board extends JPanel implements Runnable{
 	
 	public Board() {
 		super();
-
+		// Load all music files and sound clips
 		images = new LoadSprites();
 		sounds = new HashMap<String, Sound>();
 		sounds.put("bgm1", new Sound(Sound.bgm1, true));
@@ -67,6 +71,7 @@ public class Board extends JPanel implements Runnable{
 		sounds.put("powdown", new Sound(Sound.sPowerDown, false));
 		sounds.put("bounce", new Sound(Sound.sBounce, false));
 		
+		// Create the keyboard listener and set a deafault background
 		KeyListener temp = new Control();
 		addKeyListener(temp);
 		setFocusable(true);
@@ -75,7 +80,9 @@ public class Board extends JPanel implements Runnable{
 		setFocusable(true);
 		start();
 	}
-	
+	/*
+	 * Purpose of this function is to create the main game thread and run it
+	 */
 	public void addNotify() {
 		super.addNotify();
 		if (thread == null) {
@@ -83,7 +90,9 @@ public class Board extends JPanel implements Runnable{
 			thread.start();
 		}
 	}
-	
+	/*
+	 * Purpose of this function is to initialize all the states
+	 */
 	public void start() {
 		title = new TitleState();
 		game = new GameState();
@@ -100,7 +109,9 @@ public class Board extends JPanel implements Runnable{
 		currentState = title;
 		sounds.get("bgm1").play();
 	}
-	
+	/*
+	 * Purpose of this function is to handle all the state changes and also play appropriate sounds for states
+	 */
 	public static void stateChange() {
 		if (TitleState.isMenu == true){
 			currentState = title;
@@ -140,12 +151,13 @@ public class Board extends JPanel implements Runnable{
 		}
 	}
 	
+	/*
+	 * This function contains the game loop which is used to refresh the game 30 times per second
+	 */
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		running = true;
 		
-		// game loop		
 		long startTime;
 		long URDTimeMillis;
 		long waitTime;
@@ -157,15 +169,16 @@ public class Board extends JPanel implements Runnable{
 		long targetTime = 1000/fps;
 		
 		while (running) {
-				// add pause
 			startTime = System.nanoTime();
-			
+			// If game is not paused, refresh the game
 			if (pause == false) {tick();}
 			
+			// Calculate the required target time to sleep to acheive 30 ticks per second
 			URDTimeMillis = (System.nanoTime() - startTime)/1000000;
 			waitTime = targetTime - URDTimeMillis;
 			
 			try {
+				// Make the thread sleep for the calcualted wait time
 				Thread.sleep(waitTime);
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -178,12 +191,12 @@ public class Board extends JPanel implements Runnable{
 				averageFPS = Math.round(1000.0 / ((totalTime/frameCount) / 1000000));
 				frameCount = 0;
 				totalTime = 0;
-				
 			}
 		}
 	}
 	
 	public void tick() {
+		// Ticks the current game state 
 		if (currentState != null) {
 			currentState.tick();
 		}
@@ -192,17 +205,19 @@ public class Board extends JPanel implements Runnable{
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		
+		// Draws the current game state
 		if (currentState != null) {
 			currentState.doDrawing(g);
 		}
 		
 		Toolkit.getDefaultToolkit().sync();
 
-	//	System.out.println(fps);
-		
+		// Uncomment the line below to test fps
+		//System.out.println(fps);	
 	}
-		
+	/*
+	 * Purpose of this fucntion is pass in every key press and key release to the keyboardinputs class
+	 */
 	private class Control extends KeyAdapter {
 		public void keyPressed(KeyEvent e) {
 			keyIN.keyPress(e);

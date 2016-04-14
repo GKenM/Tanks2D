@@ -1,3 +1,7 @@
+/**
+ * This class creates the first map using the grid based map
+ * Author: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.maps;
 
 public class Map1 extends Grid {
