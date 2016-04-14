@@ -1,3 +1,7 @@
+/**
+ * This class creates a delay between each respawn of players when someone dies
+ * Author: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.reminders;
 
 import java.util.Timer;

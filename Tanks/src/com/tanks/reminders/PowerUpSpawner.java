@@ -1,3 +1,7 @@
+/**
+ * This class spawns powerups every 30seconds
+ * Author: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.reminders;
 
 import java.util.ArrayList;

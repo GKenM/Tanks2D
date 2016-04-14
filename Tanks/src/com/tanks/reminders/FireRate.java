@@ -1,3 +1,7 @@
+/**
+ * This class is the timer that handles the fire rate
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.reminders;
 
 import java.util.Timer;

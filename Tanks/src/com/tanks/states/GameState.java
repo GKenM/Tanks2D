@@ -6,16 +6,18 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
 
+import com.tanks.main.Board;
+import com.tanks.main.Log;
 import com.tanks.modes.ArcadeMode;
 import com.tanks.modes.GameMode;
 import com.tanks.modes.LocalMP;
 import com.tanks.modes.TrainingMode;
 import com.tanks.objects.GameObject;
+import com.tanks.objects.ObjectInteraction;
 import com.tanks.objects.Walls;
 import com.tanks.reminders.EffectTimer;
 import com.tanks.reminders.GameTimer;
 import com.tanks.reminders.PowerUpSpawner;
-import com.tanks.resources.LoadSprites;
 
 public class GameState extends State{
 	private static GameMode gameMode;
@@ -23,19 +25,20 @@ public class GameState extends State{
 	private static TrainingMode training;
 	private static ArcadeMode arcade;
 	private static Walls walls;
+	private static ObjectInteraction mechanics;
 	
 	private static GameTimer gameTimer;
 	private static PowerUpSpawner powerTimer;
 	private static EffectTimer player1Effect;
 	private static EffectTimer player2Effect;
 	
-	private LoadSprites image;
-
 	public static final int tankSize = 48;
 	public static final int tankSpeed = 3;
+	public static final int tankRof = 2000;
+	
+	public static Log log;
     
 	public GameState() {
-		image = new LoadSprites();
 		walls = new Walls();
 		gameTimer = new GameTimer(120);
 		localMP = new LocalMP();
@@ -45,18 +48,33 @@ public class GameState extends State{
 		player1Effect = new EffectTimer();
 		player2Effect = new EffectTimer();
 		
+		mechanics = new ObjectInteraction(walls);
+		
 		gameMode = training;
 	}
 	
 	public static void setMode() {
+		walls = new Walls();
+		powerTimer = new PowerUpSpawner(walls.getWalls());
+		mechanics = new ObjectInteraction(walls);
+		training.setMechanics(mechanics);
+		arcade.setMechanics(mechanics);
+		arcade.setWalls(walls);
+		localMP.setMechanics(mechanics);
+		
+		log = new Log();
+		
 		if (TitleState.isTraining == true) {
 			gameMode = training;
+			gameMode.setDefault();
 		}
 		if (TitleState.isArcade == true) {
 			gameMode = arcade;
+			gameMode.setArcadeSpecs();
 		}
 		if (TitleState.isLocalMP == true) {
 			gameMode = localMP;
+			gameMode.setDefault();
 		}
 	}
 	
@@ -65,25 +83,24 @@ public class GameState extends State{
 		Graphics2D g2d = (Graphics2D) g;	
 		
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		
-		gameTimer.doDrawing(g);
-		player1Effect.doDrawing(g);
-		player2Effect.doDrawing(g);
-	    
+			    
 	    // Walls
 	    g2d.setColor(Color.red);
 	    ArrayList<GameObject> wall = walls.getWalls();
 	    
 	    for (int i = 0; i < wall.size(); i++) {
-	    	g2d.drawImage(image.getSprite(6),(int) wall.get(i).getX() - 6 , (int) wall.get(i).getY() -6, null);
+	    	g2d.drawImage(Board.images.getSprite(6),(int) wall.get(i).getX() - 6 , (int) wall.get(i).getY() -6, null);
 	    }
 	    
 	    gameMode.doDrawing(g);
+		gameTimer.doDrawing(g);
+		player1Effect.doDrawing(g);
+		player2Effect.doDrawing(g);
 	    
 	}
 
 	@Override
-	public void tick() {
+	public void tick() {		
 		gameTimer.tick();
 		powerTimer.tick();
 		player1Effect.tick();
@@ -91,6 +108,7 @@ public class GameState extends State{
 		
 		if (gameTimer.getSecs() < 120) {
 			gameMode.tick();
+			log.writeFile(); // LOG FILE
 		}
 	}
 	
@@ -103,6 +121,7 @@ public class GameState extends State{
 		
 		localMP.reset();
 		training.reset();
+		arcade.reset();
 	}
 	
 	public static GameMode getMode() {

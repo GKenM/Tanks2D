@@ -17,13 +17,15 @@ public class SPOptionState extends State {
 	public void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g2d.setColor(Color.blue);
+		g2d.fillRect(0,0,1024,768);
 		g2d.setColor(Color.black);	
 		g2d.fillRect(40,40,442,300);
 		g2d.fillRect(542,40,442,300);
 		g2d.fillRect(141,50,80,80);		
-		g2d.setColor(Color.green);	
-		g2d.fillRect(50,50,422,380);
-		g2d.fillRect(552,50,422,380);
+		g2d.setColor(Color.white);	
+		g2d.fillRect(50,50,422,280);
+		g2d.fillRect(552,50,422,280);
 		g2d.setColor(Color.black);	
 		g2d.fillRect(181,60,80,80);
 		g2d.fillRect(101,160,80,80);
@@ -40,18 +42,29 @@ public class SPOptionState extends State {
 		g2d.setFont(font1);
 		g2d.drawString("CONTROLS 1", 80, 320);
 		g2d.drawString("CONTROLS 2", 582, 320);
-		g2d.drawString("Press '1'", 310, 120);
-		g2d.drawString("Press '2'", 812, 120);
-		g2d.setColor(Color.white);
-		Font font = new Font("Serif", Font.PLAIN, 60);
+		g2d.setColor(Color.gray);
+		g2d.fillRect(332,360,360,80);
+		g2d.fillRect(191,63,60,72);
+		g2d.fillRect(111,164,60,72);
+		g2d.fillRect(211,164,60,72);
+		g2d.fillRect(311,164,60,72);
+		g2d.fillRect(713,63,60,72);
+		g2d.fillRect(613,164,60,72);
+		g2d.fillRect(713,164,60,72);
+		g2d.fillRect(813,164,60,72);
+		g2d.fillRect(332,360,360,80);
+		g2d.setColor(Color.black);
+		g2d.fillRect(360,280,40,40);
+		g2d.fillRect(860,280,40,40);
+		Font font = new Font("Serif", Font.PLAIN, 50);
 		g2d.setFont(font);
-		g2d.drawString("W",191, 120);
+		g2d.drawString("W",194, 120);
 		g2d.drawString("A",121, 220);
-		g2d.drawString("S",221, 220);
+		g2d.drawString("S",226, 220);
 		g2d.drawString("D",321, 220);
-		g2d.drawString("↑",718, 120);
+		g2d.drawString("↑",722, 120);
 		g2d.drawString("←",623, 220);
-		g2d.drawString("↓",718, 220);
+		g2d.drawString("↓",722, 220);
 		g2d.drawString("→",823, 220);
 		g2d.setColor(Color.blue);
 		Font font2 = new Font("Serif", Font.PLAIN, 20);
@@ -65,18 +78,15 @@ public class SPOptionState extends State {
 		g2d.drawString("Forward", 80, 110);
 		g2d.drawString("Forward", 580, 110);
 		
-		g2d.setColor(Color.green);
-		g2d.fillRect(332,370,360,80);
+		g2d.setColor(Color.gray);
+		g2d.fillRect(332,360,360,80);
+		
 		g2d.setColor(Color.black);
-		g2d.fillRect(342,380,340,60);
-		
-		
-		g2d.setColor(Color.white);
 		Font font3 = new Font("Serif", Font.PLAIN, 40);
 		g2d.setFont(font3);
-		g2d.drawString("SPACE ",360, 430);
+		g2d.drawString("SPACE ",360, 410);
 		g2d.setColor(Color.blue);
-		g2d.drawString("- Shoot",520, 430);
+		g2d.drawString("- Shoot",520, 410);
 		
 		g2d.setColor(Color.black);	
 		g2d.fillRect(20,620,80,80);

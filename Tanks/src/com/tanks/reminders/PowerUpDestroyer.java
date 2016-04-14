@@ -1,3 +1,7 @@
+/**
+ * This class handles the lifetime of powerup objects in play
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.reminders;
 
 import java.util.ArrayList;

@@ -1,3 +1,7 @@
+/**
+ * This class is the parent class for all the objects in the game
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.objects;
 
 import java.awt.Rectangle;

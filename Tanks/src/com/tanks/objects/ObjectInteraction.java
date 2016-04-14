@@ -1,3 +1,7 @@
+/**
+ * This class handles all the object interactions within the game
+ * Authors: Jakob Ettles, Ken Malavisuriya
+ */
 package com.tanks.objects;
 
 import java.awt.Rectangle;
@@ -6,6 +10,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 
+import com.tanks.main.Board;
 import com.tanks.main.game;
 import com.tanks.reminders.RespawnDelay;
 import com.tanks.states.GameState;
@@ -15,35 +20,37 @@ public class ObjectInteraction {
 	private Walls walls;
 	private GameObject wall;
 	private ArrayList<RespawnDelay> respawnDelay;
-	
 	private Rectangle top, bottom, left, right;
 	
-	public ObjectInteraction() {
+	public ObjectInteraction(Walls w) {
 		bullet = new Bullet(0,0,0,0,0,0,game.BULLET);
-		walls = new Walls();
+		walls = w;
 		wall = new GameObject(0,0,0,0,0,game.WALL);
 		respawnDelay = new ArrayList<RespawnDelay>();
 		
 		// create boundary walls
-		top = new Rectangle(0,-50,1024,50);
-		bottom = new Rectangle(0,768,1024,50);
-		left = new Rectangle(-50,0,50,768);
-		right = new Rectangle(1024,0,50,768);
+		top = new Rectangle(0,-50,game.WIDTH,50);
+		bottom = new Rectangle(0,game.HEIGHT,game.WIDTH,50);
+		left = new Rectangle(-50,0,50,game.HEIGHT);
+		right = new Rectangle(game.WIDTH,0,50,game.HEIGHT);
 	}
-	
+	/*
+	 * Purpose of this function is to handle collision between player tanks and walls/window boundary
+	 */
 	public void p1VsWalls(Tank tank) {
 		Rectangle tankBounds = tank.getBounds();
 		
-		Shape front = new Rectangle((int) tankBounds.getX()+tank.getWidth(), (int) tankBounds.getY(), 0, tank.getHeight());
+		// Create shapes for the front and back of the tanks as they are the only sides of tank that can collide
+		Shape front = new Rectangle((int) tankBounds.getMaxX(), (int) tankBounds.getY(), 0, tank.getHeight());
 		Shape back = new Rectangle((int) tankBounds.getX(), (int) tankBounds.getY(), 0, tank.getHeight());	
 		
+		// Transform both shapes for the tanks angle
 		AffineTransform pf = new AffineTransform();
 		pf.rotate(tank.getA()*Math.PI/180, tank.getX(), tank.getY());
 		front = pf.createTransformedShape(front);
 		back = pf.createTransformedShape(back);
 
-		// Window boundary collision
-		
+		// Check for window boundary collision
 		if (front.intersects(top)||front.intersects(bottom)||front.intersects(left)||front.intersects(right)) {
 			//tank.setY(tank.getY()+tank.getSpeed()); // TO USE IF WE WANT BOUNCE
 			tank.setVelocityForward(0);
@@ -52,9 +59,8 @@ public class ObjectInteraction {
 			tank.setVelocityBackward(0);
 		}
 		
-		
+		// Loop through every wall object and check for collision
 		ArrayList<GameObject> ws = walls.getWalls();
-		
 		for (int i = 0; i < ws.size(); i++) {
 			wall = ws.get(i);
 			
@@ -68,7 +74,9 @@ public class ObjectInteraction {
 			}
 		}
 	}	
-	
+	/*
+	 * Purpose of this function is to check collision between bullets and wall and implement bounce
+	 */
 	public void bulletVsWalls(ArrayList<Bullet> ts) {
 	    for (int i = 0; i < ts.size(); i++) {
 	    	bullet = ts.get(i);
@@ -84,24 +92,28 @@ public class ObjectInteraction {
 	    		bullet.setBounce(true);
 	    		bullet.setVelX(-bullet.getVelX());
 	    		bullet.setX(0+bullet.getWidth()/2);
+    			Board.sounds.get("bounce").play();
 	    	}
 	    	if (castBullet.getMaxX() > game.WIDTH) {
 	    		// Bullet is going to hit the right boundary 
 	    		bullet.setBounce(true);
 	    		bullet.setVelX(-bullet.getVelX());
 	    		bullet.setX(game.WIDTH-bullet.getWidth()/2);
+    			Board.sounds.get("bounce").play();
 	    	}
 	    	if (castBullet.getY() < 0) {
 	    		// Bullet is going to hit the top boundary
 	    		bullet.setBounce(true);
 	    		bullet.setVelY(-bullet.getVelY());
 	    		bullet.setY(0+bullet.getHeight()/2);
+    			Board.sounds.get("bounce").play();
 	    	}
 	    	if (castBullet.getMaxY() > game.HEIGHT) {
 	    		// Bullet is going to hit the bottom boundary
 	    		bullet.setBounce(true);
 	    		bullet.setVelY(-bullet.getVelY());
 	    		bullet.setY(game.HEIGHT-bullet.getHeight()/2);
+    			Board.sounds.get("bounce").play();
 	    	}
 	    	
 	    	ArrayList<GameObject> ws = walls.getWalls();
@@ -116,6 +128,7 @@ public class ObjectInteraction {
 	    		if (wallBounds.intersects(castBullet)) {
 	    			temp.add(wall);
 	    			bullet.setBounce(true);
+	    			Board.sounds.get("bounce").play();
 	    		}
 	    	}
 	    	// If the bullet is only going to collide with one wall
@@ -233,8 +246,11 @@ public class ObjectInteraction {
 	    	}
 	    }
 	}
-	
+	/*
+	 * Purpose of this function is to check collision between tanks and bullets and give scores appropriately 
+	 */
 	public void tankVsBullet(Tank player1, Tank player2, ArrayList<Bullet> m1, ArrayList<Bullet> m2, Shape p1Bounds, Shape p2Bounds) {
+		// Loop through all player 1 bullets
 		for (int i = 0; i < m1.size(); i++) {
 			bullet = m1.get(i);
 			Rectangle bulletBounds = bullet.getBounds();
@@ -242,13 +258,17 @@ public class ObjectInteraction {
 			// If player 1 bullet hits player 1
 			if (p1Bounds.intersects(bulletBounds)&&bullet.getBounce()) {
 				bullet.setVis(false);
+				// Check for bubble power up
 				if (player1.isBubble() == false) {
 					player1.setVis(false);
 					player2.setScore(player2.getScore()+1);
+					player1.setDeaths(player1.getDeaths()+1);
 					respawnDelay.add(new RespawnDelay(1000));
+					Board.sounds.get("le").play();
 				} else {
 					player1.setBubble(false);
 					player1.setPU(0);
+					Board.sounds.get("tap").play();
 				}
 			} 
 			// If player 1 bullet hits player 2
@@ -256,15 +276,19 @@ public class ObjectInteraction {
 				bullet.setVis(false);
 				if (player2.isBubble() == false) {
 					player2.setVis(false);
-					player1.setScore(player2.getScore()+1);
+					player1.setScore(player1.getScore()+1);
+					player1.setKills(player1.getKills()+1);
+					player2.setDeaths(player2.getDeaths()+1);
 					respawnDelay.add(new RespawnDelay(1000));
+					Board.sounds.get("le").play();
 				} else {
 					player2.setBubble(false);
 					player2.setPU(0);
+					Board.sounds.get("tap").play();
 				}
 			}
 		}
-		
+		// Loop through all player 2 bullets
 		for (int i = 0; i < m2.size(); i++) {
 			bullet = m2.get(i);
 			Rectangle bulletBounds = bullet.getBounds();
@@ -275,10 +299,14 @@ public class ObjectInteraction {
 				if (player1.isBubble() == false) {
 					player1.setVis(false);
 					player2.setScore(player2.getScore()+1);
+					player2.setKills(player2.getKills()+1);
+					player1.setDeaths(player1.getDeaths()+1);
 					respawnDelay.add(new RespawnDelay(1000));
+					Board.sounds.get("le").play();
 				} else {
 					player1.setBubble(false);
 					player1.setPU(0);
+					Board.sounds.get("tap").play();
 				}
 			} 
 			
@@ -287,51 +315,137 @@ public class ObjectInteraction {
 				bullet.setVis(false);				
 				if (player2.isBubble() == false) {
 					player2.setVis(false);
-					player1.setScore(player2.getScore()+1);
+					player1.setScore(player1.getScore()+1);
+					player2.setDeaths(player2.getDeaths()+1);
 					respawnDelay.add(new RespawnDelay(1000));
+					Board.sounds.get("le").play();
 				} else {
 					player2.setBubble(false);
 					player2.setPU(0);
+					Board.sounds.get("tap").play();
 				}
 			}
 		}
 	}
-	
+	/*
+	 * AI only function: used to check bullet collision with AI
+	 */
+	public void bulletVsBot(Tank player1, ArrayList<Enemy> bots, ArrayList<Bullet> m1, Shape p1Bounds, int scoreMP) {
+		// Loop through all the active bots
+		for (int i = 0; i < bots.size(); i++) {
+			// Create a hitbox for bots and transform accordingly
+			Shape botBounds = bots.get(i).getBounds();
+			AffineTransform bf = new AffineTransform();
+			bf.rotate(bots.get(i).getA() * Math.PI/180, bots.get(i).getX(), bots.get(i).getY());
+			botBounds = bf.createTransformedShape(botBounds);
+			
+			// Loop through all player 1 bullets
+			for (int j = 0; j < m1.size(); j++) {
+				bullet = m1.get(j);
+				
+				// If bullet hits a bot
+				if (botBounds.intersects(bullet.getBounds())) {
+					bullet.setVis(false);
+					player1.setScore(player1.getScore()+1*scoreMP);
+					player1.setKills(player1.getKills()+1);
+					bots.remove(i);
+					bots.add(new Enemy(0,0,3,48,48,2000,game.BOT, player1, walls));
+					Board.sounds.get("le").play();
+				}
+				// If bullet hit player
+				if (p1Bounds.intersects(bullet.getBounds())&&bullet.getBounce()) {
+					bullet.setVis(false);
+					if (player1.isBubble() == false && player1.getVis()) {
+						player1.setVis(false);
+						// Lose 3 points
+						player1.setScore(player1.getScore()-3);
+						player1.setDeaths(player1.getDeaths()+1);
+						respawnDelay.add(new RespawnDelay(1000));
+						Board.sounds.get("le").play();
+					} else {
+						player1.setBubble(false);
+						player1.setPU(0);
+						Board.sounds.get("tap").play();
+					}
+				} 
+			}
+			
+		    ArrayList<Bullet> botBullets = bots.get(i).getBullets();
+
+		    for (int k = 0; k < botBullets.size(); k++) {
+		    	if (p1Bounds.intersects(botBullets.get(k).getBounds())) {
+		    		// player 1 is hit
+					if (player1.isBubble() == false) {
+						player1.setVis(false);
+						botBullets.get(k).setVis(false);
+						// Lose 3 points
+						player1.setScore(player1.getScore()-3);
+						player1.setDeaths(player1.getDeaths()+1);
+						respawnDelay.add(new RespawnDelay(1000));
+						Board.sounds.get("le").play();
+					} else {
+						player1.setBubble(false);
+						player1.setPU(0);
+						Board.sounds.get("tap").play();
+					}
+		    	}
+		    }
+		}
+	}
+	/*
+	 * Purpose of this function is to check tank on tank collision
+	 */
 	public void tankvsTank(Tank player1, Tank player2, Shape p1Bounds, Shape p2Bounds) {	
+		// Create areas for both tank hitboxes
 		Area p1 = new Area(p1Bounds);
 		Area p2 = new Area(p2Bounds);
 		
+		// Check for intersection
 		p1.intersect(p2);
 		
-		if (!p1.isEmpty()) {
+		// If player1 intersects with player2
+		if (!p1.isEmpty() && player1.getVis() && player2.getVis()) {
 			player1.setVis(false);
 			player2.setVis(false);
+			Board.sounds.get("le").play();
+			// If the second player is AI, player 1 will get a score penalty
+			if (player2.getID() == 0) {
+				player1.setScore(player1.getScore()-5);
+			}
 			respawnDelay.add(new RespawnDelay(1000));
 		}
 		
 	}
-	
+	/*
+	 * Purpose of this function is to check bullet on bullet collision
+	 */
 	public void bulletvsBullet(ArrayList<Bullet> m1, ArrayList<Bullet> m2) {
+		// Loop through player 1 bullets
 		for (int i = 0; i < m1.size(); i++) {
 			Rectangle bullet1 = m1.get(i).getBounds();
-			
+			// Loop through player 2 bullets
 			for (int j = 0; j < m2.size(); j++) {
 				Rectangle bullet2 = m2.get(j).getBounds();
-				
+				// If bullets collides, make them dissapear 
 				if (bullet1.intersects(bullet2)) {
 					m1.get(i).setVis(false);
 					m2.get(j).setVis(false);
+					Board.sounds.get("e").play();
 				}
 				
 			}
 		}
 	}
-	
+	/*
+	 * Purpose of this function is to check with player picks up and power up
+	 */
 	public void tankvsPowerUp(Tank player1, ArrayList<PowerUp> powerUps, Shape p1Bounds) {
+		// Loop through all the active power ups
 		for (int i = 0; i < powerUps.size(); i++) {
+			// If player hits a power up, activate its effect and remove it from the board
 			if (p1Bounds.intersects(powerUps.get(i).getBounds())) {
 				GameState.getEffectTimer(player1.getID()).set(player1);
-				
+				Board.sounds.get("powup").play();
 				player1.resetEffect();
 				powerUps.get(i).applyEffect(player1);
 				powerUps.remove(i);
